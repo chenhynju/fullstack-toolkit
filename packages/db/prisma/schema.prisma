@@ -1,0 +1,16 @@
+// 数据库 schema：开发环境使用 SQLite（零依赖服务），生产切换 Postgres 见 docs/adr/0004
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}
