@@ -1,5 +1,8 @@
 # fullstack-toolkit
 
+[![CI](https://github.com/chenhynju/fullstack-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/chenhynju/fullstack-toolkit/actions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 Monorepo 工程模板：**Next.js + Fastify + Turborepo + pnpm**，内置质量门禁、性能预算与 CI/CD。
 新项目从这里开始，自动获得工程规范与交付保障——这也是"性能与工程化基建"作品集项目的骨架。
 
@@ -140,4 +143,5 @@ console.log('listening', { port });        // ❌ 报错：Console 调用必须�
 - [ ] 多阶段 Docker 构建 + pnpm deploy（镜像体积优化）
 - [ ] Lighthouse CI 接入门禁（性能回归自动拦截）
 - [ ] 认证与权限示例（Auth.js / SIWE）
-- [ ] 新增 `packages/ai`（Python/FastAPI 服务示例，打通 AI 方向）
+- [x] 新增 `packages/ai`（Python/FastAPI 服务）——**设计已定稿**，规格见
+      [`packages/ai/DESIGN.md`](packages/ai/DESIGN.md)，代码待实现（里程碑 M1–M4）
