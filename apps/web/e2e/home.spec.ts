@@ -9,17 +9,21 @@ async function register(page: Page, email: string, name: string) {
   await page.getByRole('button', { name: 'Create account', exact: true }).last().click();
   await expect(page.getByRole('button', { name: '+ New project' })).toBeVisible();
 }
-test('anonymous landing, API protection and mobile layout', async ({ page, request, baseURL }) => {
+test('anonymous landing, API protection and mobile layout', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
   await expect(page.getByTestId('api-status')).toHaveText('API connected');
-  expect((await request.get('/api/projects', { maxRetries: 2 })).status()).toBe(401);
-  const csrf = await request.post('/api/auth/logout', {
-    data: {},
-    headers: { origin: baseURL! },
-    maxRetries: 2
+  const protection = await page.evaluate(async () => {
+    const projects = await fetch('/api/projects');
+    const csrf = await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}'
+    });
+    return { projects: projects.status, csrf: csrf.status };
   });
-  expect(csrf.status()).toBe(403);
+  expect(protection.projects).toBe(401);
+  expect(protection.csrf).toBe(403);
   await expect(
     page.getByRole('heading', { name: 'From a template to your own live product' })
   ).toBeVisible();
