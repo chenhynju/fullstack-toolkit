@@ -14,4 +14,3 @@ app.listen({ port: readConfig().PORT, host: '0.0.0.0' }).catch((err: unknown) =>
   console.error('[api] failed to start', err instanceof Error ? err.name : 'unknown');
   process.exit(1);
 });
-
