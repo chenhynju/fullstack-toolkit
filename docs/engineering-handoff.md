@@ -26,3 +26,7 @@ Windows Prisma failed when the target SQLite file did not exist. The new prepare
 6. Finish English README/ADR/CI/deployment/observability docs, architecture/pipeline diagrams and exact reproduction commands. Optional Neon remains out of scope until core complete.
 
 Automation f12-2 is ACTIVE, COUNT=1, next requested run 2026-10-18 04:23 Asia/Shanghai. Do not create a duplicate recurring automation. If work is already complete, verify and finish. Notify only completion/failure/required user action.
+
+## Milestone checkpoint
+
+Commit ac1727e contains the first engineering quality-gates milestone; its actual Husky/lint-staged/commitlint hooks passed. A focused follow-up serializes formatter/linter tasks. Existing web browser 5/5 and admin browser 2/2 passed, full production build 5/5 passed, Windows create-only helper migrated a fresh database through both genuine Prisma migrations. See .local/engineering logs for the exact final commit and PR publication result. No production publish was performed.

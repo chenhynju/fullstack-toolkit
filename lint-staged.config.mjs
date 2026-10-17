@@ -1,5 +1,4 @@
-// Run each package's own ESLint configuration; do not lint private operator files.
+// Run formatters before ESLint so overlapping files are never mutated concurrently.
 export default {
-  '*.{json,md,yml,yaml,css,ts,tsx,js,mjs,mts}': 'prettier --write',
-  '{apps,packages}/**/*.{ts,tsx,js,mjs,mts}': 'node scripts/lint-staged.mjs'
+  '*.{json,md,yml,yaml,css,ts,tsx,js,mjs,mts}': ['prettier --write', 'node scripts/lint-staged.mjs']
 };
