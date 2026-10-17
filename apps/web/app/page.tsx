@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { GettingStarted } from '@/components/getting-started';
 import { formatDate } from '@toolkit/i18n';
 import { LanguageSwitcher, useLocale } from '@/components/locale-provider';
 import { localizeError } from '@/lib/localize-error';
@@ -397,6 +398,7 @@ export default function Home() {
               <span /> {t('Foundation')} / 01
             </span>
           </div>
+          <GettingStarted />
           {Boolean(error) && (
             <div role="alert" className="message error">
               <strong>{t('We couldn’t finish that request.')}</strong>
@@ -704,46 +706,6 @@ export default function Home() {
               {t('User manual')} <Arrow />
             </Link>
           </p>
-          <section id="guide" className="guide-panel">
-            <details>
-              <summary>
-                <span>
-                  <span className="eyebrow">{t('MAKE IT YOUR OWN')}</span>
-                  <strong>{t('Your next project starts with a good foundation.')}</strong>
-                </span>
-                <span className="guide-expand">{t('Read the guide +')}</span>
-              </summary>
-              <div className="guide-grid">
-                <div>
-                  <span>01</span>
-                  <h3>{t('Try the full workflow')}</h3>
-                  <p>
-                    {t(
-                      'Create an account, add a project, edit its status and refresh. Your work is saved to your account. Signing out revokes your session.'
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <span>02</span>
-                  <h3>{t('Keep access deliberate')}</h3>
-                  <p>
-                    {t(
-                      'New accounts have a private workspace. Only an explicitly provisioned administrator can open the member directory.'
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <span>03</span>
-                  <h3>{t('Build your next product')}</h3>
-                  <p>
-                    {t(
-                      'Start with the repository README and docs/reuse.md. Share API contracts in packages/types and keep authorization in the API.'
-                    )}
-                  </p>
-                </div>
-              </div>
-            </details>
-          </section>
           <footer className="page-footer">
             <span>fullstack / toolkit</span>
             <span>Next.js · Fastify · Prisma · Turborepo</span>
