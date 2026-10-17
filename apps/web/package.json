@@ -10,14 +10,15 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage",
     "e2e": "playwright test",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "node ../../scripts/analyze.mjs"
   },
   "dependencies": {
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
     "next": "^15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@toolkit/i18n": "workspace:*"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

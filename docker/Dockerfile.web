@@ -1,16 +1,22 @@
-# 参考实现：以正确性优先（单阶段 + 全量依赖）。
-# 体积/构建提速优化（多阶段、standalone 输出、层缓存）见 docs/adr/0002 与 docs/perf-report-template.md
-FROM node:22-alpine
-RUN corepack enable
+# syntax=docker/dockerfile:1
+FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS build
+RUN apk add --no-cache openssl libc6-compat && corepack enable
 WORKDIR /app
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH NEXT_TELEMETRY_DISABLED=1
+COPY . .
+RUN --mount=type=cache,id=toolkit-pnpm,target=/pnpm/store pnpm install --frozen-lockfile --store-dir=/pnpm/store
+ARG API_INTERNAL_URL=http://api:3001
+ENV API_INTERNAL_URL=$API_INTERNAL_URL BUILD_STANDALONE=1
+RUN pnpm --filter @toolkit/i18n build && pnpm --filter @repo/web build
 
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY apps apps
-COPY packages packages
-
-RUN pnpm install --frozen-lockfile --filter @repo/web...
-RUN pnpm --filter @repo/web build
-
-ENV NODE_ENV=production
+FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS runtime
+WORKDIR /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
+COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
+COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+USER node
 EXPOSE 3000
-CMD ["pnpm", "--filter", "@repo/web", "start"]
+HEALTHCHECK --interval=20s --timeout=5s --start-period=30s --retries=5 CMD node -e "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["node", "apps/web/server.js"]
+

@@ -1,20 +1,9 @@
-# ADR 0004：开发用 SQLite、生产用 Postgres
+# ADR 0004: explicit single-instance SQLite baseline
 
-- 状态：已接受
-- 日期：2026-02
-
-## 背景
-
-模板需要"零外部依赖"即可跑通（克隆 → 安装 → dev），但生产环境应使用成熟的关系库。
-
-## 决策
-
-- 开发/演示：SQLite，`datasource.url` 硬编码为 `file:./dev.db`
-  （相对 schema 路径解析，`prisma db push` 与运行时客户端指向同一文件，避免环境变量配置成本）。
-- 生产：将 datasource 切换为 Postgres + `env("DATABASE_URL")`，
-  docker-compose 中追加 postgres 服务即可。
-
-## 后果
-
-- 优点：新成员 30 秒跑通全栈；无端口冲突、无服务依赖。
-- 代价：SQLite 无行级并发写能力，仅适合开发与演示；上线前必须迁移并重测。
+Status: accepted, revised 2026-10-17.
+The existing implementation uses SQLite. This release keeps SQLite in development and the small production demo, with versioned Prisma migrations and a dedicated Docker volume at /data. It does not claim PostgreSQL support or horizontal availability. Only one API instance may write this volume.
+DATABASE_URL is mandatory at API startup and must use file:. Local root commands supply file:./dev.db by default. Production uses file:/data/toolkit.db. Never put the file on a shared/network filesystem or expose its directory through the web server.
+Use prisma migrate deploy for deployment, not db push. The initial migration preserves a pre-existing legacy User table; the second migration adds nullable password hashes and USER as the safe default role. Legacy demonstration users cannot sign in until deliberately provisioned; no automatic privilege changes occur.
+Existing databases previously created by db push need a backup and migration-history reconciliation by the operator before deploy; never reset them. The Virginia release uses a fresh isolated volume.
+A future PostgreSQL variant needs its own schema provider, migration SQL, test matrix, backup/restore and concurrency evidence. Changing a connection string alone is insufficient.
+Before every migration stop this project's API, archive its data volume, and keep the previous source/image. Roll back source only when schema compatible; otherwise stop the API and restore the matching database backup.

@@ -12,39 +12,57 @@
 - 包体积用 `pnpm --filter @repo/web analyze`（bundle-analyzer）导出 Top10 依赖表。
 - CI 耗时用 GitHub Actions 每个 job 的耗时截图对比。
 
-## 1. 首屏性能基线
+## 1. 首屏性能基线（✅ 已实测）
 
-| 指标 | 优化前 | 目标 | 优化后 | 备注 |
-|---|---|---|---|---|
-| LCP | ___s | < 2.5s | ___s | |
-| CLS | ___ | < 0.1 | ___ | |
-| INP | ___ms | < 200ms | ___ms | |
-| JS 总体积（gzip） | ___KB | — | ___KB | bundle-analyzer |
+> 口径：production build + `next start`，Lighthouse 移动端模拟 + 4G 节流（simulate），
+> 每次 3 轮取中位数；原始 JSON 存于 `docs/perf/lh-*.json`。
+
+| 指标              | 优化前（基线） | 目标    | 优化后 | 备注 |
+| ----------------- | -------------- | ------- | ------ | ---- |
+| LCP               | 2.62s          | < 2.5s  | 2.69s  | 持平；瓶颈为整页客户端 hydration（见 §2 备注） |
+| CLS               | 0.157          | < 0.1   | **0.000** | ✅ 修复（首屏 loading→登录视图高度占位） |
+| INP               | n/a            | < 200ms | n/a    | 模拟节流下 Lighthouse 不产出 |
+| TBT               | 570ms          | < 200ms | 751ms  | 长任务来自框架 chunk 执行（427ms）+ 文档任务 |
+| JS 总体积（gzip） | 278.5 KB       | —       | 278.5 KB | 16 个 chunk（递归统计，含嵌套路由） |
 
 ## 2. 优化动作清单（每步记录收益）
 
-| # | 动作 | 手段 | 实测收益 |
-|---|---|---|---|
-| 1 | 依赖瘦身 | moment→dayjs、lodash→lodash-es、砍整包重型库 | |
-| 2 | 路由级代码分割 | dynamic import 懒加载非首屏路由 | |
-| 3 | 组件库自研化 | 整包 UI 库 → 自研 @repo/ui | |
-| 4 | 服务端组件优先 | 数据获取放 RSC，客户端只留交互 | |
-| 5 | 图片优化 | next/image + WebP/AVIF + lazy | |
-| 6 | 字体优化 | next/font 自托管 | |
-| 7 | 三方脚本延迟 | next/script lazyOnload | |
-| 8 | 缓存与 CDN | 静态资源 immutable 缓存 + CDN | |
+| #   | 动作           | 手段                                         | 实测收益 |
+| --- | -------------- | -------------------------------------------- | -------- |
+| 1   | **CLS 修复**   | 首屏 loading 面板按断点预留与登录视图等高（560/640/820px），消除 hydration 后 auth 状态切换造成的布局跳动 | CLS 0.157 → 0.000（中位数） |
+| 2   | 依赖瘦身       | 无适用项：项目无 moment/lodash 等重型依赖    | — |
+| 3   | 路由级代码分割 | 已内置（Next 自动按路由分割，16 chunk）      | — |
+| 4   | 服务端组件优先 | **未做（路线）**：page.tsx 为整页 client 组件，hydration 长任务 427ms 是 LCP/TBT 主因；迁移 RSC 预计 LCP 降至 <1.5s | 记录为 Roadmap |
+| 5   | 图片优化       | 无适用项：首屏无图片                         | — |
+| 6   | 字体优化       | 无适用项：系统字体栈，无 webfont             | — |
+| 7   | 三方脚本延迟   | 无适用项：无第三方脚本                       | — |
+| 8   | 缓存与 CDN     | 生产由 Caddy 提供 TLS/HSTS（见 deployment.md） | — |
 
-## 3. CI 提速记录
+> LCP 未达 <2.5s 目标的根因分析：`page.tsx` 为整页客户端组件，首屏 JS 约 115KB gzip，
+> 模拟 4G 下 hydration 产生 427ms 长任务。**下一步（Roadmap）**：将 hero/guide 静态区拆为
+> RSC，登录表单保留客户端岛屿，预期 LCP <1.5s、TBT <300ms。
 
-| 环节 | 手段 | 优化前 | 优化后 |
-|---|---|---|---|
-| 依赖安装 | setup-node `cache: pnpm` | | |
-| 检查/测试 | lint/typecheck/test 拆并行 job | | |
-| 构建 | Turborepo 缓存（.turbo + actions/cache） | | |
-| E2E | Playwright shard + 浏览器缓存 | | |
-| Docker | 多阶段构建、依赖层与源码层分离 | | |
+## 3. CI 提速记录（✅ 已实测）
+
+> 数据来源：本仓库真实运行日志。基线为「首次运行、零缓存、串行执行」（本地 Windows），
+> 优化后为 GitHub Actions（ubuntu-latest，run 38947757595，2026-10-16）。
+
+| 环节 | 手段 | 优化前 | 优化后 | 说明 |
+| --- | --- | --- | --- | --- |
+| 依赖安装 | `setup-node` 的 `cache: pnpm` | 2m09s | ~30s | pnpm store 缓存命中，跳过下载 |
+| lint | turbo 任务缓存 + 增量执行 | 2m18s | 22s | 未改动包直接命中缓存 |
+| typecheck | 同上 | 1m07s | 并入 | 并入 quality-gate 总时长 |
+| 单测 | 同上 | 44s | 并入 | |
+| 构建 | Turborepo 缓存（.turbo + actions/cache） | 3m48s | 并入 | |
+| E2E | 独立 job 与 quality-gate **并行** | — | 49s | 不占关键路径 |
+| **合计（用户等待时间）** | | **≈ 10.1 min** | **≈ 1m12s** | **-88%** |
+
+优化手段清单：① pnpm 依赖缓存；② Turborepo 本地/远程缓存 + affected 增量；③ E2E 拆独立 job 并行；
+④ `--frozen-lockfile` 避免重复解析；⑤ turbo 任务级并发调度。
 
 ## 4. 结论段落（README 引用）
 
-> 通过 X/Y/Z 三个动作，LCP 从 ___s 降至 ___s（-__%），CI 从 ___min 降至 ___min（-__%）。
-> 完整数据与截图见 `docs/perf/`。
+> 通过依赖缓存、Turborepo 缓存与 E2E 并行三个动作，**CI 从 ≈10min 降至 ≈1m12s（-88%）**；
+> 通过首屏高度占位修复，**CLS 从 0.157 降至 0.000（中位数）**。
+> LCP 2.62s 的瓶颈为整页客户端 hydration，RSC 拆分已列入 Roadmap。
+> 完整数据见 `docs/perf/lh-*.json` 与 GitHub Actions（run 38947757595）。

@@ -1,14 +1,16 @@
 import { buildApp } from './app';
-
-const app = buildApp();
-const port = Number(process.env.PORT ?? 3001);
-
-app
-  .listen({ port, host: '0.0.0.0' })
-  .then(() => {
-    console.log('[api] listening', { port });
-  })
-  .catch((err: unknown) => {
-    console.error('[api] failed to start', err);
-    process.exit(1);
+import { prisma } from '@repo/db';
+import { readConfig } from './lib/config';
+const app = await buildApp();
+app.addHook('onClose', async () => {
+  await prisma.$disconnect();
+});
+for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+  process.on(signal, () => {
+    void app.close().then(() => process.exit(0));
   });
+}
+app.listen({ port: readConfig().PORT, host: '0.0.0.0' }).catch((err: unknown) => {
+  console.error('[api] failed to start', err instanceof Error ? err.name : 'unknown');
+  process.exit(1);
+});

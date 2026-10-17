@@ -1,23 +1,10 @@
-# ADR 0002：共享包的导出策略（源码导出 vs 构建产物）
+# ADR 0002: shared package exports
 
-- 状态：已接受
-- 日期：2026-02
+Status: accepted, revised 2026-10-17.
 
-## 背景
-
-Monorepo 中共享包（ui/types/db）被多个应用消费，需要决定消费方拿到的是
-源码还是构建产物。
-
-## 决策
-
-- `@repo/ui`、`@repo/types`：导出 **TypeScript 源码**（`exports: "./src/index.ts(x)"`）。
-  消费方（web）通过 `transpilePackages` 让 Next.js 转译；api 仅类型级使用 `@repo/types`。
-- `@repo/db`：**构建为 JS + d.ts 后导出**（`exports: { types, default }` → dist）。
-  原因：api 生产环境以 Node 直接运行 tsup 产物，源码 .ts 无法被 Node 解析；
-  且 Prisma Client 生成物（node_modules/.prisma）必须留在 db 包内解析。
-
-## 后果
-
-- 优点：ui/types 改动即时生效，无需构建步骤；db 边界清晰、运行时可解析。
-- 代价：db 修改后需 `pnpm --filter @repo/db build` 才对 api 生效（root postinstall 已自动执行）；
-  生产镜像依赖完整 node_modules 布局（后续可用 pnpm deploy + 多阶段构建优化，见性能报告模板）。
+- @repo/ui and @repo/types export TypeScript sources. Next transpiles shared UI; API imports the public contracts as types. Public user/project DTOs explicitly implement those contracts and serialize dates as ISO strings.
+- @repo/db exports built JavaScript, declarations, the Prisma singleton and the PrismaClient constructor. The runtime constructor must be a value export; export type alone cannot be used by tests or an application to instantiate a client.
+- The root postinstall generates Prisma and builds the database package. Turbo orders database builds before API build/typecheck/tests. Root commands load the root environment file.
+- pnpm deploy creates a pruned API dependency tree. A generated Prisma client is captured before deployment and copied into the nearest .prisma/client location in the deployed dependency tree; a placeholder nearer to @prisma/client must not shadow it.
+- The Docker package stage performs a real SELECT 1 through the deployed Prisma client before producing the runtime image. Migrations use a separate pre-deploy workspace stage so pnpm deploy cannot change its installation metadata.
+- Runtime containers run JavaScript as a non-root user. They do not install dependencies or generate clients on startup.

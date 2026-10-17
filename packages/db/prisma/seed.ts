@@ -1,31 +1,41 @@
-// 种子数据：pnpm db:seed
+// Explicit operator bootstrap; no default accounts or passwords.
 import { PrismaClient } from '@prisma/client';
-
+import { randomBytes, scrypt } from 'node:crypto';
+import { promisify } from 'node:util';
 const prisma = new PrismaClient();
-
 async function main() {
-  // 注意：SQLite 的 createMany 不支持 skipDuplicates（Prisma 类型层面即为 never），
-  // 这里用 findUnique + create 保证幂等（可重复执行）
-  const sampleUsers = [
-    { email: 'alice@example.com', name: 'Alice' },
-    { email: 'bob@example.com', name: 'Bob' }
-  ];
-
-  let count = 0;
-  for (const user of sampleUsers) {
-    const existing = await prisma.user.findUnique({ where: { email: user.email } });
-    if (!existing) {
-      await prisma.user.create({ data: user });
-      count += 1;
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+  if (
+    !email ||
+    !password ||
+    password.length < 16 ||
+    password.length > 128 ||
+    !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
+  )
+    throw new Error('Set ADMIN_EMAIL and ADMIN_PASSWORD (16–128 characters) explicitly.');
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing)
+    throw new Error(
+      'Account already exists. Bootstrap refuses to overwrite its password or privileges.'
+    );
+  const salt = randomBytes(16).toString('hex');
+  const hash = (await promisify(scrypt)(password, salt, 64)) as Buffer;
+  await prisma.user.create({
+    data: {
+      email,
+      name: 'Workspace administrator',
+      role: 'ADMIN',
+      passwordHash: `scrypt$${salt}$${hash.toString('hex')}`
     }
-  }
-  console.log('[db] seeded', { count });
-}
-
-main()
-  .then(() => prisma.$disconnect())
-  .catch(async (err: unknown) => {
-    console.error('[db] seed failed', err);
-    await prisma.$disconnect();
-    process.exit(1);
   });
+  console.log('[db] administrator created; no credentials logged');
+}
+main()
+  .catch(() => {
+    console.error(
+      '[db] bootstrap failed: check explicit credentials and ensure account does not exist'
+    );
+    process.exitCode = 1;
+  })
+  .finally(() => prisma.$disconnect());

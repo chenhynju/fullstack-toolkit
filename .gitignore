@@ -4,6 +4,7 @@ dist/
 .turbo/
 coverage/
 playwright-report/
+playwright-pilot-report/
 test-results/
 *.tsbuildinfo
 .env
@@ -11,3 +12,8 @@ test-results/
 !.env.example
 packages/db/prisma/dev.db
 .DS_Store
+.local/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
