@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import noUntaggedConsole from './rules/no-untagged-console.mjs';
+import noAppImports from './rules/no-app-imports.mjs';
 
 export default [
   {
@@ -21,12 +22,13 @@ export default [
   {
     plugins: {
       'repo-custom': {
-        rules: { 'no-untagged-console': noUntaggedConsole }
+        rules: { 'no-untagged-console': noUntaggedConsole, 'no-app-imports': noAppImports }
       }
     },
     rules: {
       // 示例自定义规则：console 调用必须带 [tag] 前缀，让日志可过滤、可归属
-      'repo-custom/no-untagged-console': 'error'
+      'repo-custom/no-untagged-console': 'error',
+      'repo-custom/no-app-imports': 'error'
     }
   },
   eslintConfigPrettier

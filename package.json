@@ -2,7 +2,7 @@
   "name": "fullstack-toolkit",
   "version": "0.1.0",
   "private": true,
-  "description": "Monorepo 工程模板：Next.js + Fastify + Turborepo + pnpm，内置质量门禁、性能预算与 CI/CD",
+  "description": "Monorepo \u5de5\u7a0b\u6a21\u677f\uff1aNext.js + Fastify + Turborepo + pnpm\uff0c\u5185\u7f6e\u8d28\u91cf\u95e8\u7981\u3001\u6027\u80fd\u9884\u7b97\u4e0e CI/CD",
   "packageManager": "pnpm@11.7.0",
   "engines": {
     "node": ">=22.14"
@@ -22,11 +22,18 @@
     "db:seed": "node scripts/run.mjs pnpm --filter @repo/db seed",
     "db:studio": "node scripts/run.mjs pnpm --filter @repo/db db:studio",
     "postinstall": "node scripts/run.mjs pnpm --filter @repo/db build && pnpm --filter @toolkit/i18n build",
-    "db:migrate": "node scripts/run.mjs pnpm --filter @repo/db db:migrate"
+    "db:migrate": "node scripts/run.mjs pnpm --filter @repo/db db:migrate",
+    "prepare": "node scripts/prepare-hooks.mjs",
+    "size:check": "pnpm size-check && node scripts/check-entry-budget.mjs",
+    "test:tooling": "node --test scripts/tests/*.test.mjs"
   },
   "devDependencies": {
-    "prettier": "^3.4.2",
-    "turbo": "^2.3.3",
-    "typescript": "^5.7.3"
+    "prettier": "3.9.10",
+    "turbo": "2.11.8",
+    "typescript": "5.7.3",
+    "husky": "9.1.7",
+    "lint-staged": "16.2.6",
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1"
   }
 }

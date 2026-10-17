@@ -17,3 +17,6 @@ packages/db/prisma/dev.db
 *.db-journal
 *.db-shm
 *.db-wal
+
+.vercel/
+.husky/_/

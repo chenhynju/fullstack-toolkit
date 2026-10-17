@@ -4,6 +4,10 @@ An English-first, reusable full-stack foundation: **Next.js 15, Fastify 5, Prism
 
 [简体中文](README.zh-CN.md) · [User manual](docs/user-manual.en.md) · [中文操作手册](docs/user-manual.zh-CN.md)
 
+## Engineering infrastructure continuation
+
+The minimal Vite consumer, package gates and current scope are documented in [engineering-guide.md](docs/engineering-guide.md). Existing application features remain for backward compatibility; new work focuses on delivery infrastructure. See the [corrected performance evidence](docs/perf-report-template.md) rather than comparing local Windows timings with GitHub runner timings.
+
 ## Run locally
 
 Use Node **22.14+** and **pnpm 11.7.0**, pinned in package.json.

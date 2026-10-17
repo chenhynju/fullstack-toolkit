@@ -1,0 +1,37 @@
+{
+  "name": "@repo/admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 3300",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 3300 --strictPort",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "analyze": "vite build --mode analyze"
+  },
+  "dependencies": {
+    "@repo/ui": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "typescript": "5.7.3",
+    "eslint": "9.39.5",
+    "vitest": "2.1.8",
+    "@vitest/coverage-v8": "2.1.8",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/node": "22.20.5",
+    "@playwright/test": "1.64.1",
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "vite": "6.4.1",
+    "@vitejs/plugin-react": "4.7.0",
+    "rollup-plugin-visualizer": "6.0.3"
+  }
+}

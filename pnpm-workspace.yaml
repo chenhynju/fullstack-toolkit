@@ -12,8 +12,8 @@ allowBuilds:
 
 # Security patches for transitive Next/Prisma tooling dependencies.
 overrides:
-  postcss: '>=8.5.23 <9'
-  deepmerge-ts: '^8.0.0'
+  postcss: '8.5.30'
+  deepmerge-ts: '8.0.2'
 
 # Fail clearly instead of mutating node_modules during lint/test/build.
 verifyDepsBeforeRun: error
