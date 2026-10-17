@@ -4,6 +4,14 @@ test('homepage explains the real developer workflow in both languages and on mob
 }) => {
   await page.goto('/#guide');
   const guide = page.locator('#guide');
+  const navigation = page.getByRole('navigation', { name: 'Main navigation' });
+  await expect(navigation.getByRole('link', { name: 'Projects', exact: true })).toHaveAttribute(
+    'href',
+    '#account'
+  );
+  await navigation.getByRole('link', { name: 'Projects', exact: true }).click();
+  await expect(page.locator('#account')).toBeInViewport();
+  await navigation.getByRole('link', { name: 'Getting started', exact: false }).click();
   await expect(
     guide.getByRole('heading', { name: 'From a template to your own live product' })
   ).toBeVisible();

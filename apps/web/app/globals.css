@@ -125,50 +125,10 @@ select:focus {
 .brand-mark.small span:nth-child(3) {
   height: 22px;
 }
-.sidebar-context {
-  margin: 40px 0 32px;
-  padding: 14px 10px;
-  border: 1px solid #3a4d44;
-  border-radius: 9px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.context-icon {
-  width: 31px;
-  height: 31px;
-  display: grid;
-  place-items: center;
-  background: #526048;
-  color: #e1f3bf;
-  border-radius: 7px;
-  font-weight: 700;
-}
-.sidebar-context strong,
-.sidebar-context div span {
-  display: block;
-}
-.sidebar-context strong {
-  font-size: 12px;
-}
-.sidebar-context div span {
-  font-size: 10px;
-  color: #a8b8ab;
-  margin-top: 5px;
-}
-.context-arrow {
-  margin-left: auto;
-  color: #b3c6b1;
-}
-.nav-label,
 .eyebrow {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.6px;
-}
-.nav-label {
-  color: #acbeb0;
-  margin: 0 10px 14px;
 }
 .nav-item {
   display: flex;
@@ -208,27 +168,6 @@ select:focus {
   margin-top: auto;
   padding-top: 40px;
 }
-.template-note {
-  border: 1px solid #3b4d40;
-  border-radius: 9px;
-  padding: 19px 16px;
-}
-.template-note .eyebrow {
-  font-size: 8px;
-  color: #bdcdb5;
-}
-.template-note p {
-  font-size: 24px;
-  line-height: 1.3;
-  letter-spacing: -0.8px;
-  margin: 12px 0 20px;
-}
-.template-note a {
-  font-size: 10px;
-  color: var(--lime);
-  display: flex;
-  justify-content: space-between;
-}
 .service-status {
   display: flex;
   align-items: center;
@@ -237,8 +176,7 @@ select:focus {
   color: #bbcbbd;
   padding: 22px 0 0 8px;
 }
-.status-dot,
-.foundation-tag > span {
+.status-dot {
   width: 6px;
   height: 6px;
   background: #bde77e;
@@ -347,14 +285,6 @@ select:focus {
 .manual-section li {
   margin: 10px 0;
 }
-.version-tag {
-  font-size: 9px;
-  letter-spacing: 1px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 6px 8px;
-  color: #7a8777;
-}
 .avatar {
   height: 31px;
   width: 31px;
@@ -394,108 +324,11 @@ select:focus {
   line-height: 1.7;
   margin: 0;
 }
-.foundation-tag {
-  font-size: 10px;
-  color: #677b50;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  border: 1px solid #dce3cf;
-  border-radius: 20px;
-  padding: 8px 12px;
-}
-.foundation-tag > span {
-  background: #7f9e45;
-}
 .welcome-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
+  max-width: 600px;
   border: 1px solid var(--border);
   border-radius: 13px;
-  overflow: hidden;
   background: white;
-}
-.welcome-panel {
-  background: #e9eedf;
-  padding: 38px 38px 24px;
-  position: relative;
-}
-.intro-badge {
-  font-size: 9px;
-  letter-spacing: 1.7px;
-  color: #62704b;
-  display: inline-block;
-  border-bottom: 1px solid #a6b78c;
-  padding-bottom: 9px;
-}
-.welcome-panel h2 {
-  font-size: 39px;
-  line-height: 1.14;
-  font-weight: 500;
-  letter-spacing: -1.8px;
-  margin: 24px 0 16px;
-}
-.welcome-panel h2 > span {
-  color: #789645;
-}
-.welcome-panel > p {
-  color: #617057;
-  font-size: 12px;
-  line-height: 1.9;
-  max-width: 315px;
-}
-.stack-diagram {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 24px auto 20px;
-  max-width: 270px;
-}
-.stack-diagram > div {
-  width: 100%;
-  padding: 13px 16px;
-  border: 1px solid #cbd5bc;
-  border-radius: 8px;
-  background: #f7f9f0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px 0;
-}
-.stack-diagram > div > span {
-  grid-column: 1/-1;
-  font-size: 7px;
-  letter-spacing: 1.4px;
-  color: #7f8b6a;
-}
-.stack-diagram strong {
-  font-weight: 600;
-  font-size: 17px;
-  letter-spacing: -0.5px;
-}
-.stack-diagram small {
-  font-size: 8px;
-  color: #6c7b5c;
-  align-self: center;
-  text-align: right;
-}
-.stack-diagram i {
-  font-style: normal;
-  color: #96a580;
-  font-size: 16px;
-  line-height: 24px;
-}
-.welcome-footer {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  border-top: 1px solid #cdd7be;
-  padding-top: 19px;
-  font-size: 9px;
-  color: #6e7b5d;
-}
-.welcome-footer .brand-mark span {
-  background: #7d9657;
 }
 .auth-panel {
   padding: 40px 38px;
@@ -657,19 +490,6 @@ textarea {
   font-size: 11px;
   line-height: 1.9;
 }
-.page-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  color: #8a9481;
-  font-size: 9px;
-  padding: 26px 0 0;
-}
-.page-footer > span:first-child {
-  font-weight: 600;
-  color: #607053;
-}
 .message {
   padding: 13px 16px;
   border-radius: 7px;
@@ -704,9 +524,7 @@ textarea {
   color: #ab614d;
 }
 .loading-panel {
-  /* 预留与 welcome-grid（登录/注册视图）相当的高度：
-     首屏 SSR 输出 loading 面板，hydration 后 auth 检查完成切换为登录视图，
-     若两者高度差异过大会把下方 guide 面板推下去造成 CLS。按断点对齐真实高度。 */
+  /* Reserve space for the account form while the session loads. */
   min-height: 560px;
   display: flex;
   align-items: center;
@@ -730,7 +548,7 @@ textarea {
 }
 .overview {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.05fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   border: 1px solid var(--border);
   border-radius: 10px;
   background: white;
@@ -744,12 +562,6 @@ textarea {
 .overview > div:last-child {
   border: 0;
 }
-.overview > div > span:not(.tiny-mark) {
-  font-size: 8px;
-  letter-spacing: 1.2px;
-  color: #7c8872;
-  display: block;
-}
 .overview > div > strong {
   display: block;
   font-size: 35px;
@@ -757,30 +569,14 @@ textarea {
   letter-spacing: -1px;
   margin: 10px 0 6px;
 }
+.overview > div > span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
 .overview small {
   font-size: 9px;
   color: #9ba38f;
-}
-.overview .overview-note {
-  background: #edf3e4;
-  margin: -22px 0;
-  border-radius: 0 10px 10px 0;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.tiny-mark {
-  font-size: 28px;
-  color: #799850;
-}
-.overview-note p {
-  font-size: 15px;
-  line-height: 1.7;
-  color: #708358;
-}
-.overview-note strong {
-  color: #394c2c;
-  font-weight: 500;
 }
 .workspace-board {
   background: white;
@@ -822,12 +618,6 @@ textarea {
   border-bottom: 1px solid var(--border);
   padding: 10px 25px;
   gap: 15px;
-}
-.view-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: #637553;
-  white-space: nowrap;
 }
 .search-label {
   margin: 0;
@@ -874,11 +664,6 @@ textarea {
 .stage-dot.done {
   background: #72a58b;
 }
-.column-caption {
-  font-size: 8px;
-  color: #9aa38d;
-  margin: 9px 0 19px;
-}
 .project-list {
   display: flex;
   flex-direction: column;
@@ -891,11 +676,6 @@ textarea {
   padding: 17px;
   box-shadow: 0 2px 3px #26361c04;
   overflow-wrap: anywhere;
-}
-.card-category {
-  font-size: 7px;
-  letter-spacing: 1.2px;
-  color: #96a382;
 }
 .project-card h4 {
   font-size: 13px;
@@ -1033,19 +813,13 @@ textarea {
     padding-top: 52px;
   }
   .welcome-grid {
-    min-height: 580px;
+    max-width: 600px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: white;
   }
   .auth-panel {
     padding: 48px 55px;
-  }
-  .welcome-panel {
-    padding: 42px 50px 27px;
-  }
-  .welcome-panel h2 {
-    font-size: 46px;
-  }
-  .stack-diagram {
-    margin-top: 30px;
   }
 }
 @media (max-width: 1150px) {
@@ -1069,23 +843,11 @@ textarea {
   .page-heading h1 {
     font-size: 27px;
   }
-  .foundation-tag {
-    display: none;
-  }
-  .welcome-panel {
-    padding: 30px 25px 22px;
-  }
-  .welcome-panel h2 {
-    font-size: 32px;
-  }
   .auth-panel {
     padding: 30px 25px;
   }
   .overview > div {
     padding: 0 15px;
-  }
-  .overview-note p {
-    font-size: 12px;
   }
   .board-columns {
     gap: 12px;
@@ -1105,8 +867,6 @@ textarea {
     justify-content: space-between;
     gap: 20px;
   }
-  .sidebar-context,
-  .nav-label,
   .sidebar-bottom {
     display: none;
   }
@@ -1143,28 +903,19 @@ textarea {
     font-size: 27px;
   }
   .welcome-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .welcome-panel h2 {
-    font-size: 29px;
-  }
-  .welcome-panel {
-    padding: 29px 22px 22px;
+    max-width: 600px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: white;
   }
   .auth-panel {
     padding: 30px 24px;
-  }
-  .welcome-panel > p {
-    font-size: 11px;
   }
   .auth-panel h2 {
     font-size: 21px;
   }
   .overview {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .overview .overview-note {
-    display: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .overview > div:nth-child(3) {
     border: 0;
@@ -1174,9 +925,6 @@ textarea {
   }
   .board-column {
     padding-bottom: 15px;
-  }
-  .column-caption {
-    margin-bottom: 12px;
   }
   .project-list {
     display: grid;
@@ -1194,9 +942,6 @@ textarea {
   }
   .guide-grid p {
     margin: 0;
-  }
-  .version-tag {
-    display: none;
   }
 }
 @media (max-width: 560px) {
@@ -1233,20 +978,10 @@ textarea {
     font-size: 8px;
   }
   .welcome-grid {
-    grid-template-columns: 1fr;
-  }
-  .welcome-panel {
-    padding: 27px 25px;
-  }
-  .welcome-panel h2 {
-    font-size: 34px;
-  }
-  .welcome-panel > p {
-    max-width: none;
-  }
-  .stack-diagram,
-  .welcome-footer {
-    display: none;
+    max-width: 600px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: white;
   }
   .auth-panel {
     padding: 30px 25px;
@@ -1263,22 +998,11 @@ textarea {
   .guide-panel summary strong {
     line-height: 1.6;
   }
-  .page-footer {
-    font-size: 8px;
-    gap: 12px;
-  }
-  .page-footer > span:last-child {
-    display: none;
-  }
   .overview {
     padding: 20px 0;
   }
   .overview > div {
     padding: 0 12px;
-  }
-  .overview > div > span:not(.tiny-mark) {
-    font-size: 7px;
-    letter-spacing: 0.7px;
   }
   .overview > div > strong {
     font-size: 29px;
@@ -1462,5 +1186,22 @@ textarea {
   .usage-map dl > div {
     grid-template-columns: minmax(0, 1fr);
     gap: 3px;
+  }
+}
+.sidebar nav {
+  margin-top: 32px;
+}
+.board-toolbar {
+  justify-content: flex-end;
+}
+.project-list {
+  margin-top: 16px;
+}
+@media (max-width: 800px) {
+  .sidebar nav {
+    margin-top: 0;
+  }
+  .welcome-grid {
+    max-width: 100%;
   }
 }

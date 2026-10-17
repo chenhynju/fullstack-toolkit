@@ -9,10 +9,10 @@ import type { MessageKey } from '@/lib/messages';
 import type { ApiResponse, Project, ProjectStatus, User } from '@repo/types';
 import { api, RequestError } from '@/lib/api';
 
-const stages: { id: ProjectStatus; label: MessageKey; caption: MessageKey }[] = [
-  { id: 'PLANNED', label: 'Planned', caption: 'Ready for a first step' },
-  { id: 'ACTIVE', label: 'In progress', caption: 'Keep the momentum going' },
-  { id: 'DONE', label: 'Completed', caption: 'Good work, shipped' }
+const stages: { id: ProjectStatus; label: MessageKey }[] = [
+  { id: 'PLANNED', label: 'Planned' },
+  { id: 'ACTIVE', label: 'In progress' },
+  { id: 'DONE', label: 'Completed' }
 ];
 function Mark({ small = false }: { small?: boolean }) {
   return (
@@ -76,7 +76,6 @@ function ProjectDialog({
       <form onSubmit={submit}>
         <div className="dialog-heading">
           <div>
-            <span className="eyebrow">{t('YOUR WORKSPACE')}</span>
             <h2 id="dialog-title">{project ? t('Edit project') : t('Start something new')}</h2>
           </div>
           <button
@@ -299,23 +298,14 @@ export default function Home() {
             fullstack<span className="brand-light"> / toolkit</span>
           </span>
         </Link>
-        <div className="sidebar-context">
-          <span className="context-icon">F</span>
-          <div>
-            <strong>{t('Foundation')}</strong>
-            <span>{t('Your next great project')}</span>
-          </div>
-          <span className="context-arrow">⌄</span>
-        </div>
-        <p className="nav-label">{t('WORKSPACE')}</p>
         <nav aria-label={t('Main navigation')}>
           <a
             className={!members ? 'nav-item selected' : 'nav-item'}
-            href="#workspace"
+            href={user ? '#projects' : '#account'}
             onClick={() => setMembers(null)}
           >
             <span aria-hidden="true">▦</span>
-            {t('Projects')} <span className="nav-count">{user ? projects.length : '—'}</span>
+            {t('Projects')} {user && <span className="nav-count">{projects.length}</span>}
           </a>
           {user?.role === 'ADMIN' && (
             <button
@@ -333,17 +323,6 @@ export default function Home() {
           </a>
         </nav>
         <div className="sidebar-bottom">
-          <div className="template-note">
-            <span className="eyebrow">{t('BUILT TO BE YOURS')}</span>
-            <p>
-              {t('Less setup.')}
-              <br />
-              {t('More building.')}
-            </p>
-            <a href="#guide">
-              {t('Explore the foundation')} <Arrow />
-            </a>
-          </div>
           <div className="service-status" data-testid="api-status">
             <span className={service === 'connected' ? 'status-dot' : 'status-dot muted'} />
             {t(
@@ -364,7 +343,6 @@ export default function Home() {
           </div>
           <div className="topbar-right">
             <LanguageSwitcher />
-            <span className="version-tag">F12 · MONOREPO</span>
             {user && (
               <>
                 <span className="avatar" title={user.email}>
@@ -379,24 +357,7 @@ export default function Home() {
         </header>
         <main id="workspace" className="main-content">
           <div className="page-heading">
-            <div>
-              <p className="eyebrow">{t('A SOLID START. AN OPEN ROAD.')}</p>
-              <h1>
-                {user
-                  ? members
-                    ? t('Your people.')
-                    : t('Make room for your next idea.')
-                  : t('Start strong. Build what matters.')}
-              </h1>
-              <p className="subtitle">
-                {user
-                  ? t('A little structure for the big things you’re working on.')
-                  : t('One workspace. A connected stack. A foundation you can make your own.')}
-              </p>
-            </div>
-            <span className="foundation-tag">
-              <span /> {t('Foundation')} / 01
-            </span>
+            <h1>{members ? t('Members') : user ? t('Projects') : t('Workspace')}</h1>
           </div>
           <GettingStarted />
           {Boolean(error) && (
@@ -414,55 +375,12 @@ export default function Home() {
           {checking ? (
             <div className="loading-panel">{t('Opening your workspace…')}</div>
           ) : !user ? (
-            <section className="welcome-grid">
-              <div className="welcome-panel">
-                <div className="intro-badge">{t('THE FULLSTACK STARTER')}</div>
-                <h2>
-                  {t('From first commit')}
-                  <br />
-                  {t('to your next launch')}
-                  <span>.</span>
-                </h2>
-                <p>
-                  {t(
-                    'Authentication, a shared data layer and a real workspace — the essentials, connected from the start.'
-                  )}
-                </p>
-                <div
-                  className="stack-diagram"
-                  aria-label={t('Next.js frontend connected to Fastify API and Prisma data')}
-                >
-                  <div>
-                    <span>{t('01 / INTERFACE')}</span>
-                    <strong>Next.js</strong>
-                    <small>React · TypeScript</small>
-                  </div>
-                  <i aria-hidden="true">↓</i>
-                  <div>
-                    <span>{t('02 / APPLICATION')}</span>
-                    <strong>Fastify</strong>
-                    <small>{t('Sessions · Permissions')}</small>
-                  </div>
-                  <i aria-hidden="true">↓</i>
-                  <div>
-                    <span>{t('03 / PERSISTENCE')}</span>
-                    <strong>Prisma</strong>
-                    <small>{t('Your data, connected')}</small>
-                  </div>
-                </div>
-                <div className="welcome-footer">
-                  <Mark small />
-                  <span>{t('The boring parts, thoughtfully handled.')}</span>
-                </div>
-              </div>
+            <section id="account" className="welcome-grid">
               <div className="auth-panel">
-                <span className="eyebrow">{t('YOUR BUILD STARTS HERE')}</span>
-                <h2>
-                  {mode === 'register' ? t('Create your workspace') : t('Good to see you again')}
-                </h2>
+                <h2>{mode === 'register' ? t('Create account') : t('Sign in')}</h2>
                 <p>
                   {mode === 'register'
-                    ? t('A personal space to turn ideas into shipped projects.')
+                    ? t('Your projects are private to your account.')
                     : t('Sign in to pick up where you left off.')}
                 </p>
                 <div className="auth-tabs">
@@ -571,7 +489,6 @@ export default function Home() {
                 <div>
                   <span>{t('YOUR PROJECTS')}</span>
                   <strong>{projects.length.toString().padStart(2, '0')}</strong>
-                  <small>{t('Ideas with a place to grow')}</small>
                 </div>
                 <div>
                   <span>{t('IN PROGRESS')}</span>
@@ -581,7 +498,6 @@ export default function Home() {
                       .length.toString()
                       .padStart(2, '0')}
                   </strong>
-                  <small>{t('A step closer to shipping')}</small>
                 </div>
                 <div>
                   <span>{t('COMPLETED')}</span>
@@ -591,18 +507,9 @@ export default function Home() {
                       .length.toString()
                       .padStart(2, '0')}
                   </strong>
-                  <small>{t('Made it across the finish line')}</small>
-                </div>
-                <div className="overview-note">
-                  <span className="tiny-mark">↗</span>
-                  <p>
-                    {t('Small steps.')}
-                    <br />
-                    <strong>{t('Real progress.')}</strong>
-                  </p>
                 </div>
               </section>
-              <section className="workspace-board" aria-label={t('Project board')}>
+              <section id="projects" className="workspace-board" aria-label={t('Project board')}>
                 <div className="section-heading">
                   <div>
                     <h2>
@@ -615,7 +522,6 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="board-toolbar">
-                  <span className="view-label">▦ &nbsp; {t('Board view')}</span>
                   <label className="search-label">
                     <span className="sr-only">{t('Search projects')}</span>
                     <input
@@ -643,16 +549,11 @@ export default function Home() {
                             <h3>{t(stage.label)}</h3>
                             <span>{items.length}</span>
                           </div>
-                          <p className="column-caption">{t(stage.caption)}</p>
                           <div className="project-list">
                             {items.map((project) => (
                               <article className="project-card" key={project.id}>
-                                <span className="card-category">{t('PROJECT')}</span>
                                 <h4>{project.title}</h4>
-                                <p>
-                                  {project.description ||
-                                    t('Every great project starts with an idea.')}
-                                </p>
+                                <p>{project.description || t('No description')}</p>
                                 <div className="card-bottom">
                                   <span>
                                     {t('Updated')}{' '}
@@ -684,12 +585,7 @@ export default function Home() {
                             ))}
                             {items.length === 0 && (
                               <div className="column-empty">
-                                <span aria-hidden="true">＋</span>
-                                <p>
-                                  {search
-                                    ? t('No matching projects')
-                                    : t('A little room for possibility')}
-                                </p>
+                                <p>{search ? t('No matching projects') : t('No projects')}</p>
                               </div>
                             )}
                           </div>
@@ -706,13 +602,6 @@ export default function Home() {
               {t('User manual')} <Arrow />
             </Link>
           </p>
-          <footer className="page-footer">
-            <span>fullstack / toolkit</span>
-            <span>Next.js · Fastify · Prisma · Turborepo</span>
-            <span>
-              {t('Built for what comes next.')} <Arrow />
-            </span>
-          </footer>
         </main>
       </div>
       {dialog && (
