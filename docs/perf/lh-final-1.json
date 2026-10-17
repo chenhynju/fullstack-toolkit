@@ -339,9 +339,7 @@
             "duration": 16.368
           }
         ],
-        "sortedBy": [
-          "duration"
-        ]
+        "sortedBy": ["duration"]
       },
       "guidanceLevel": 1
     },
@@ -419,9 +417,7 @@
         "summary": {
           "wastedMs": 1311.2159999999967
         },
-        "sortedBy": [
-          "total"
-        ]
+        "sortedBy": ["total"]
       },
       "guidanceLevel": 1
     },
@@ -822,9 +818,7 @@
             "rtt": 1.5840000000000032
           }
         ],
-        "sortedBy": [
-          "rtt"
-        ]
+        "sortedBy": ["rtt"]
       }
     },
     "network-server-latency": {
@@ -857,9 +851,7 @@
             "serverResponseTime": 56.28400000000002
           }
         ],
-        "sortedBy": [
-          "serverResponseTime"
-        ]
+        "sortedBy": ["serverResponseTime"]
       }
     },
     "main-thread-tasks": {
@@ -1230,12 +1222,8 @@
             "startTime": 1181.284
           }
         ],
-        "sortedBy": [
-          "duration"
-        ],
-        "skipSumming": [
-          "startTime"
-        ],
+        "sortedBy": ["duration"],
+        "skipSumming": ["startTime"],
         "debugData": {
           "type": "debugdata",
           "urls": [
@@ -1533,9 +1521,7 @@
             "totalBytes": 1071
           }
         ],
-        "sortedBy": [
-          "totalBytes"
-        ]
+        "sortedBy": ["totalBytes"]
       },
       "guidanceLevel": 1
     },
@@ -1558,9 +1544,7 @@
         "items": [],
         "overallSavingsMs": 0,
         "overallSavingsBytes": 0,
-        "sortedBy": [
-          "wastedBytes"
-        ],
+        "sortedBy": ["wastedBytes"],
         "debugData": {
           "type": "debugdata",
           "metricSavings": {
@@ -1591,9 +1575,7 @@
         "items": [],
         "overallSavingsMs": 0,
         "overallSavingsBytes": 0,
-        "sortedBy": [
-          "wastedBytes"
-        ],
+        "sortedBy": ["wastedBytes"],
         "debugData": {
           "type": "debugdata",
           "metricSavings": {
@@ -1623,9 +1605,7 @@
         "items": [],
         "overallSavingsMs": 0,
         "overallSavingsBytes": 0,
-        "sortedBy": [
-          "wastedBytes"
-        ],
+        "sortedBy": ["wastedBytes"],
         "debugData": {
           "type": "debugdata",
           "metricSavings": {
@@ -1655,9 +1635,7 @@
         "items": [],
         "overallSavingsMs": 0,
         "overallSavingsBytes": 0,
-        "sortedBy": [
-          "wastedBytes"
-        ],
+        "sortedBy": ["wastedBytes"],
         "debugData": {
           "type": "debugdata",
           "metricSavings": {
@@ -1976,9 +1954,7 @@
           }
         ],
         "items": [],
-        "skipSumming": [
-          "wastedMs"
-        ]
+        "skipSumming": ["wastedMs"]
       },
       "guidanceLevel": 3
     },
@@ -2473,9 +2449,7 @@
     }
   },
   "configSettings": {
-    "output": [
-      "json"
-    ],
+    "output": ["json"],
     "maxWaitForFcp": 30000,
     "maxWaitForLoad": 45000,
     "pauseAfterFcpMs": 1000,
@@ -2502,12 +2476,7 @@
     "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
     "auditMode": false,
     "gatherMode": false,
-    "clearStorageTypes": [
-      "file_systems",
-      "shader_cache",
-      "service_workers",
-      "cache_storage"
-    ],
+    "clearStorageTypes": ["file_systems", "shader_cache", "service_workers", "cache_storage"],
     "disableStorageReset": false,
     "debugNavigation": false,
     "channel": "cli",
@@ -2522,19 +2491,13 @@
     "extraHeaders": null,
     "precomputedLanternData": null,
     "onlyAudits": null,
-    "onlyCategories": [
-      "performance"
-    ],
+    "onlyCategories": ["performance"],
     "skipAudits": null
   },
   "categories": {
     "performance": {
       "title": "Performance",
-      "supportedModes": [
-        "navigation",
-        "timespan",
-        "snapshot"
-      ],
+      "supportedModes": ["navigation", "timespan", "snapshot"],
       "auditRefs": [
         {
           "id": "first-contentful-paint",
@@ -2880,9 +2843,7 @@
   "entities": [
     {
       "name": "localhost",
-      "origins": [
-        "http://localhost:3000"
-      ],
+      "origins": ["http://localhost:3000"],
       "isFirstParty": true,
       "isUnrecognized": true
     }
@@ -4231,9 +4192,7 @@
       "warningHeader": "Warnings: "
     },
     "icuMessagePaths": {
-      "core/gather/driver/environment.js | warningSlowHostCpu": [
-        "runWarnings[0]"
-      ],
+      "core/gather/driver/environment.js | warningSlowHostCpu": ["runWarnings[0]"],
       "core/lib/i18n/i18n.js | firstContentfulPaintMetric": [
         "audits[first-contentful-paint].title"
       ],
@@ -4284,15 +4243,9 @@
       "core/audits/metrics/largest-contentful-paint.js | description": [
         "audits[largest-contentful-paint].description"
       ],
-      "core/lib/i18n/i18n.js | speedIndexMetric": [
-        "audits[speed-index].title"
-      ],
-      "core/audits/metrics/speed-index.js | description": [
-        "audits[speed-index].description"
-      ],
-      "core/lib/i18n/i18n.js | totalBlockingTimeMetric": [
-        "audits[total-blocking-time].title"
-      ],
+      "core/lib/i18n/i18n.js | speedIndexMetric": ["audits[speed-index].title"],
+      "core/audits/metrics/speed-index.js | description": ["audits[speed-index].description"],
+      "core/lib/i18n/i18n.js | totalBlockingTimeMetric": ["audits[total-blocking-time].title"],
       "core/audits/metrics/total-blocking-time.js | description": [
         "audits[total-blocking-time].description"
       ],
@@ -4322,9 +4275,7 @@
           "path": "audits[network-server-latency].displayValue"
         }
       ],
-      "core/lib/i18n/i18n.js | maxPotentialFIDMetric": [
-        "audits[max-potential-fid].title"
-      ],
+      "core/lib/i18n/i18n.js | maxPotentialFIDMetric": ["audits[max-potential-fid].title"],
       "core/audits/metrics/max-potential-fid.js | description": [
         "audits[max-potential-fid].description"
       ],
@@ -4334,9 +4285,7 @@
       "core/audits/metrics/cumulative-layout-shift.js | description": [
         "audits[cumulative-layout-shift].description"
       ],
-      "core/audits/server-response-time.js | title": [
-        "audits[server-response-time].title"
-      ],
+      "core/audits/server-response-time.js | title": ["audits[server-response-time].title"],
       "core/audits/server-response-time.js | description": [
         "audits[server-response-time].description"
       ],
@@ -4368,21 +4317,11 @@
         "audits[network-rtt].details.headings[1].label",
         "audits[network-server-latency].details.headings[1].label"
       ],
-      "core/lib/i18n/i18n.js | interactiveMetric": [
-        "audits.interactive.title"
-      ],
-      "core/audits/metrics/interactive.js | description": [
-        "audits.interactive.description"
-      ],
-      "core/audits/user-timings.js | title": [
-        "audits[user-timings].title"
-      ],
-      "core/audits/user-timings.js | description": [
-        "audits[user-timings].description"
-      ],
-      "core/lib/i18n/i18n.js | columnName": [
-        "audits[user-timings].details.headings[0].label"
-      ],
+      "core/lib/i18n/i18n.js | interactiveMetric": ["audits.interactive.title"],
+      "core/audits/metrics/interactive.js | description": ["audits.interactive.description"],
+      "core/audits/user-timings.js | title": ["audits[user-timings].title"],
+      "core/audits/user-timings.js | description": ["audits[user-timings].description"],
+      "core/lib/i18n/i18n.js | columnName": ["audits[user-timings].details.headings[0].label"],
       "core/audits/user-timings.js | columnType": [
         "audits[user-timings].details.headings[1].label"
       ],
@@ -4396,12 +4335,8 @@
         "audits[lcp-breakdown-insight].details.items[0].headings[1].label",
         "audits[render-blocking-insight].details.headings[2].label"
       ],
-      "core/audits/redirects.js | title": [
-        "audits.redirects.title"
-      ],
-      "core/audits/redirects.js | description": [
-        "audits.redirects.description"
-      ],
+      "core/audits/redirects.js | title": ["audits.redirects.title"],
+      "core/audits/redirects.js | description": ["audits.redirects.description"],
       "core/audits/mainthread-work-breakdown.js | failureTitle": [
         "audits[mainthread-work-breakdown].title"
       ],
@@ -4411,30 +4346,18 @@
       "core/audits/mainthread-work-breakdown.js | columnCategory": [
         "audits[mainthread-work-breakdown].details.headings[0].label"
       ],
-      "core/audits/bootup-time.js | failureTitle": [
-        "audits[bootup-time].title"
-      ],
-      "core/audits/bootup-time.js | description": [
-        "audits[bootup-time].description"
-      ],
-      "core/audits/bootup-time.js | columnTotal": [
-        "audits[bootup-time].details.headings[1].label"
-      ],
+      "core/audits/bootup-time.js | failureTitle": ["audits[bootup-time].title"],
+      "core/audits/bootup-time.js | description": ["audits[bootup-time].description"],
+      "core/audits/bootup-time.js | columnTotal": ["audits[bootup-time].details.headings[1].label"],
       "core/audits/bootup-time.js | columnScriptEval": [
         "audits[bootup-time].details.headings[2].label"
       ],
       "core/audits/bootup-time.js | columnScriptParse": [
         "audits[bootup-time].details.headings[3].label"
       ],
-      "core/audits/network-rtt.js | title": [
-        "audits[network-rtt].title"
-      ],
-      "core/audits/network-rtt.js | description": [
-        "audits[network-rtt].description"
-      ],
-      "core/audits/network-server-latency.js | title": [
-        "audits[network-server-latency].title"
-      ],
+      "core/audits/network-rtt.js | title": ["audits[network-rtt].title"],
+      "core/audits/network-rtt.js | description": ["audits[network-rtt].description"],
+      "core/audits/network-server-latency.js | title": ["audits[network-server-latency].title"],
       "core/audits/network-server-latency.js | description": [
         "audits[network-server-latency].description"
       ],
@@ -4450,9 +4373,7 @@
         "audits[cache-insight].details.headings[2].label",
         "audits[render-blocking-insight].details.headings[1].label"
       ],
-      "core/lib/i18n/i18n.js | total": [
-        "audits[resource-summary].details.items[0].label"
-      ],
+      "core/lib/i18n/i18n.js | total": ["audits[resource-summary].details.items[0].label"],
       "core/lib/i18n/i18n.js | scriptResourceType": [
         "audits[resource-summary].details.items[1].label"
       ],
@@ -4477,12 +4398,8 @@
       "core/lib/i18n/i18n.js | thirdPartyResourceType": [
         "audits[resource-summary].details.items[8].label"
       ],
-      "core/audits/layout-shifts.js | title": [
-        "audits[layout-shifts].title"
-      ],
-      "core/audits/layout-shifts.js | description": [
-        "audits[layout-shifts].description"
-      ],
+      "core/audits/layout-shifts.js | title": ["audits[layout-shifts].title"],
+      "core/audits/layout-shifts.js | description": ["audits[layout-shifts].description"],
       "core/lib/i18n/i18n.js | columnElement": [
         "audits[layout-shifts].details.headings[0].label",
         "audits[non-composited-animations].details.headings[0].label",
@@ -4491,12 +4408,8 @@
       "core/audits/layout-shifts.js | columnScore": [
         "audits[layout-shifts].details.headings[1].label"
       ],
-      "core/audits/long-tasks.js | title": [
-        "audits[long-tasks].title"
-      ],
-      "core/audits/long-tasks.js | description": [
-        "audits[long-tasks].description"
-      ],
+      "core/audits/long-tasks.js | title": ["audits[long-tasks].title"],
+      "core/audits/long-tasks.js | description": ["audits[long-tasks].description"],
       "core/audits/long-tasks.js | displayValue": [
         {
           "values": {
@@ -4511,12 +4424,8 @@
       "core/audits/non-composited-animations.js | description": [
         "audits[non-composited-animations].description"
       ],
-      "core/audits/unsized-images.js | title": [
-        "audits[unsized-images].title"
-      ],
-      "core/audits/unsized-images.js | description": [
-        "audits[unsized-images].description"
-      ],
+      "core/audits/unsized-images.js | title": ["audits[unsized-images].title"],
+      "core/audits/unsized-images.js | description": ["audits[unsized-images].description"],
       "core/audits/byte-efficiency/total-byte-weight.js | title": [
         "audits[total-byte-weight].title"
       ],
@@ -4531,9 +4440,7 @@
           "path": "audits[total-byte-weight].displayValue"
         }
       ],
-      "core/audits/byte-efficiency/unminified-css.js | title": [
-        "audits[unminified-css].title"
-      ],
+      "core/audits/byte-efficiency/unminified-css.js | title": ["audits[unminified-css].title"],
       "core/audits/byte-efficiency/unminified-css.js | description": [
         "audits[unminified-css].description"
       ],
@@ -4543,9 +4450,7 @@
       "core/audits/byte-efficiency/unminified-javascript.js | description": [
         "audits[unminified-javascript].description"
       ],
-      "core/audits/byte-efficiency/unused-css-rules.js | title": [
-        "audits[unused-css-rules].title"
-      ],
+      "core/audits/byte-efficiency/unused-css-rules.js | title": ["audits[unused-css-rules].title"],
       "core/audits/byte-efficiency/unused-css-rules.js | description": [
         "audits[unused-css-rules].description"
       ],
@@ -4555,12 +4460,8 @@
       "core/audits/byte-efficiency/unused-javascript.js | description": [
         "audits[unused-javascript].description"
       ],
-      "core/audits/bf-cache.js | failureTitle": [
-        "audits[bf-cache].title"
-      ],
-      "core/audits/bf-cache.js | description": [
-        "audits[bf-cache].description"
-      ],
+      "core/audits/bf-cache.js | failureTitle": ["audits[bf-cache].title"],
+      "core/audits/bf-cache.js | description": ["audits[bf-cache].description"],
       "core/audits/bf-cache.js | displayValue": [
         {
           "values": {
@@ -4572,9 +4473,7 @@
       "core/audits/bf-cache.js | failureReasonColumn": [
         "audits[bf-cache].details.headings[0].label"
       ],
-      "core/audits/bf-cache.js | failureTypeColumn": [
-        "audits[bf-cache].details.headings[1].label"
-      ],
+      "core/audits/bf-cache.js | failureTypeColumn": ["audits[bf-cache].details.headings[1].label"],
       "node_modules/@paulirish/trace_engine/panels/application/components/BackForwardCacheStrings.js | mainResourceHasCacheControlNoStore": [
         "audits[bf-cache].details.items[0].reason"
       ],
@@ -4594,9 +4493,7 @@
       "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | requestColumn": [
         "audits[cache-insight].details.headings[0].label"
       ],
-      "core/lib/i18n/i18n.js | columnCacheTTL": [
-        "audits[cache-insight].details.headings[1].label"
-      ],
+      "core/lib/i18n/i18n.js | columnCacheTTL": ["audits[cache-insight].details.headings[1].label"],
       "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": [
         "audits[cls-culprits-insight].title"
       ],
@@ -4791,21 +4688,13 @@
       "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": [
         "audits[viewport-insight].description"
       ],
-      "core/config/default-config.js | performanceCategoryTitle": [
-        "categories.performance.title"
-      ],
-      "core/config/default-config.js | metricGroupTitle": [
-        "categoryGroups.metrics.title"
-      ],
-      "core/config/default-config.js | insightsGroupTitle": [
-        "categoryGroups.insights.title"
-      ],
+      "core/config/default-config.js | performanceCategoryTitle": ["categories.performance.title"],
+      "core/config/default-config.js | metricGroupTitle": ["categoryGroups.metrics.title"],
+      "core/config/default-config.js | insightsGroupTitle": ["categoryGroups.insights.title"],
       "core/config/default-config.js | insightsGroupDescription": [
         "categoryGroups.insights.description"
       ],
-      "core/config/default-config.js | diagnosticsGroupTitle": [
-        "categoryGroups.diagnostics.title"
-      ],
+      "core/config/default-config.js | diagnosticsGroupTitle": ["categoryGroups.diagnostics.title"],
       "core/config/default-config.js | diagnosticsGroupDescription": [
         "categoryGroups.diagnostics.description"
       ],
@@ -4833,9 +4722,7 @@
       "core/config/default-config.js | a11yNavigationGroupDescription": [
         "categoryGroups[a11y-navigation].description"
       ],
-      "core/config/default-config.js | a11yAriaGroupTitle": [
-        "categoryGroups[a11y-aria].title"
-      ],
+      "core/config/default-config.js | a11yAriaGroupTitle": ["categoryGroups[a11y-aria].title"],
       "core/config/default-config.js | a11yAriaGroupDescription": [
         "categoryGroups[a11y-aria].description"
       ],
@@ -4857,21 +4744,15 @@
       "core/config/default-config.js | a11yTablesListsVideoGroupDescription": [
         "categoryGroups[a11y-tables-lists].description"
       ],
-      "core/config/default-config.js | seoMobileGroupTitle": [
-        "categoryGroups[seo-mobile].title"
-      ],
+      "core/config/default-config.js | seoMobileGroupTitle": ["categoryGroups[seo-mobile].title"],
       "core/config/default-config.js | seoMobileGroupDescription": [
         "categoryGroups[seo-mobile].description"
       ],
-      "core/config/default-config.js | seoContentGroupTitle": [
-        "categoryGroups[seo-content].title"
-      ],
+      "core/config/default-config.js | seoContentGroupTitle": ["categoryGroups[seo-content].title"],
       "core/config/default-config.js | seoContentGroupDescription": [
         "categoryGroups[seo-content].description"
       ],
-      "core/config/default-config.js | seoCrawlingGroupTitle": [
-        "categoryGroups[seo-crawl].title"
-      ],
+      "core/config/default-config.js | seoCrawlingGroupTitle": ["categoryGroups[seo-crawl].title"],
       "core/config/default-config.js | seoCrawlingGroupDescription": [
         "categoryGroups[seo-crawl].description"
       ],
@@ -4887,9 +4768,7 @@
       "core/config/default-config.js | bestPracticesGeneralGroupTitle": [
         "categoryGroups[best-practices-general].title"
       ],
-      "core/config/default-config.js | webmcpGroupTitle": [
-        "categoryGroups.webmcp.title"
-      ],
+      "core/config/default-config.js | webmcpGroupTitle": ["categoryGroups.webmcp.title"],
       "core/config/default-config.js | webmcpGroupDescription": [
         "categoryGroups.webmcp.description"
       ],
