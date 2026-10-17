@@ -13,8 +13,12 @@ test('anonymous landing, API protection and mobile layout', async ({ page, reque
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
   await expect(page.getByTestId('api-status')).toHaveText('API connected');
-  expect((await request.get('/api/projects')).status()).toBe(401);
-  const csrf = await request.post('/api/auth/logout', { data: {}, headers: { origin: baseURL! } });
+  expect((await request.get('/api/projects', { maxRetries: 2 })).status()).toBe(401);
+  const csrf = await request.post('/api/auth/logout', {
+    data: {},
+    headers: { origin: baseURL! },
+    maxRetries: 2
+  });
   expect(csrf.status()).toBe(403);
   await expect(
     page.getByRole('heading', { name: 'From a template to your own live product' })

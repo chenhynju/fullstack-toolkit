@@ -2,6 +2,10 @@ import { expect, test } from '@playwright/test';
 test('homepage explains the real developer workflow in both languages and on mobile', async ({
   page
 }) => {
+  await page.route('**/api/auth/me', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await route.continue();
+  });
   await page.goto('/#guide');
   const guide = page.locator('#guide');
   const navigation = page.getByRole('navigation', { name: 'Main navigation' });
@@ -10,6 +14,8 @@ test('homepage explains the real developer workflow in both languages and on mob
     '#account'
   );
   await navigation.getByRole('link', { name: 'Projects', exact: true }).click();
+  await expect(page.locator('#account')).toBeInViewport();
+  await expect(page.locator('#account').getByLabel('Email address')).toBeVisible();
   await expect(page.locator('#account')).toBeInViewport();
   await navigation.getByRole('link', { name: 'Getting started', exact: false }).click();
   await expect(

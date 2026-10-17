@@ -373,7 +373,9 @@ export default function Home() {
             {notice ? t(notice) : null}
           </div>
           {checking ? (
-            <div className="loading-panel">{t('Opening your workspace…')}</div>
+            <div id={user ? 'projects' : 'account'} className="loading-panel">
+              {t('Opening your workspace…')}
+            </div>
           ) : !user ? (
             <section id="account" className="welcome-grid">
               <div className="auth-panel">
