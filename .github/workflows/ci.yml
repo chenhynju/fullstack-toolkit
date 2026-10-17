@@ -36,6 +36,7 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: false
       - run: node scripts/verify-pins.mjs
       - run: pnpm format:check
       - run: node scripts/run.mjs turbo run lint typecheck test

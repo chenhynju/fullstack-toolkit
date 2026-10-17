@@ -31,3 +31,7 @@ Scope: first M2 delivery against the uploaded engineering-only prompt. Existing 
 ## Remaining milestones
 
 Affected-package build/deploy selection, gated GHCR publication, Vercel CI-prebuilt preview/production, Sentry SDK/error ingestion, controlled heavy-dependency before/after assets/Lighthouse, single-/multistage image measurements and final English documentation polish remain incomplete. Observability and domain documents are operator runbooks, not proof that external services exist. Optional Neon is deferred. One-time continuation f12-2 is scheduled for 2026-10-18 04:23 Asia/Shanghai.
+
+## PR CI follow-up
+
+PR #2 is https://github.com/chenhynju/fullstack-toolkit/pull/2. The first quality job failed because Gitleaks generated results.sarif before the whole-tree formatter check. The SARIF report is now explicitly ignored as a generated artifact; scanning remains enabled. The scanner cannot post PR comments. Raw failure evidence is .local/engineering/quality-job-clean.log. New CI results must be checked separately; local passing gates are not a substitute. Git HTTPS transport failed twice, so GitHub API publication was used; both remote commit and tree hashes exactly matched the local objects.
