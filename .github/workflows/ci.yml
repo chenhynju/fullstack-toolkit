@@ -39,7 +39,7 @@ jobs:
           GITLEAKS_ENABLE_COMMENTS: false
       - run: node scripts/verify-pins.mjs
       - run: pnpm format:check
-      - run: node scripts/run.mjs turbo run lint typecheck test
+      - run: pnpm exec turbo run lint typecheck test
       - run: pnpm audit --prod --audit-level=high
       - run: pnpm build
       - run: node --test scripts/tests/*.test.mjs

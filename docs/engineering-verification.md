@@ -35,3 +35,5 @@ Affected-package build/deploy selection, gated GHCR publication, Vercel CI-prebu
 ## PR CI follow-up
 
 PR #2 is https://github.com/chenhynju/fullstack-toolkit/pull/2. The first quality job failed because Gitleaks generated results.sarif before the whole-tree formatter check. The SARIF report is now explicitly ignored as a generated artifact; scanning remains enabled. The scanner cannot post PR comments. Raw failure evidence is .local/engineering/quality-job-clean.log. New CI results must be checked separately; local passing gates are not a substitute. Git HTTPS transport failed twice, so GitHub API publication was used; both remote commit and tree hashes exactly matched the local objects.
+
+The next quality attempt reached task execution and exposed a Linux PATH issue: invoking the runner directly from the shell did not add node_modules/.bin, so spawning turbo returned ENOENT. The workflow now uses pnpm exec turbo for the parallel task graph. The remote e2e job passed on both initial attempts. Subsequent quality/container completion still requires verification.
