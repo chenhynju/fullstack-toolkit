@@ -18,8 +18,10 @@ test('anonymous landing, API protection and mobile layout', async ({ page, reque
   expect((await request.get('/api/projects')).status()).toBe(401);
   const csrf = await request.post('/api/auth/logout', { data: {}, headers: { origin: baseURL! } });
   expect(csrf.status()).toBe(403);
-  await page.getByText('Read the guide +').click();
-  await expect(page.getByRole('heading', { name: 'Try the full workflow' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'From a template to your own live product' })
+  ).toBeVisible();
+  await expect(page.locator('#guide .usage-steps > li')).toHaveCount(6);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true
