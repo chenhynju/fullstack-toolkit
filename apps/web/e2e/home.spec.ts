@@ -9,17 +9,25 @@ async function register(page: Page, email: string, name: string) {
   await page.getByRole('button', { name: 'Create account', exact: true }).last().click();
   await expect(page.getByRole('button', { name: '+ New project' })).toBeVisible();
 }
-test('anonymous landing, API protection and mobile layout', async ({ page, request, baseURL }) => {
+test('anonymous landing, API protection and mobile layout', async ({ page }) => {
   await page.goto('/');
-  await expect(
-    page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
   await expect(page.getByTestId('api-status')).toHaveText('API connected');
-  expect((await request.get('/api/projects')).status()).toBe(401);
-  const csrf = await request.post('/api/auth/logout', { data: {}, headers: { origin: baseURL! } });
-  expect(csrf.status()).toBe(403);
-  await page.getByText('Read the guide +').click();
-  await expect(page.getByRole('heading', { name: 'Try the full workflow' })).toBeVisible();
+  const protection = await page.evaluate(async () => {
+    const projects = await fetch('/api/projects');
+    const csrf = await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}'
+    });
+    return { projects: projects.status, csrf: csrf.status };
+  });
+  expect(protection.projects).toBe(401);
+  expect(protection.csrf).toBe(403);
+  await expect(
+    page.getByRole('heading', { name: 'From a template to your own live product' })
+  ).toBeVisible();
+  await expect(page.locator('#guide .usage-steps > li')).toHaveCount(6);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true
@@ -73,9 +81,7 @@ test('two real accounts: CRUD, session persistence, role and owner isolation, lo
     });
     expect(forged.status()).toBe(400);
     await bob.getByRole('button', { name: 'Sign out', exact: true }).click();
-    await expect(
-      bob.getByRole('heading', { name: 'Start strong. Build what matters.' })
-    ).toBeVisible();
+    await expect(bob.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
     expect((await bob.request.get('/api/auth/me')).status()).toBe(401);
   } finally {
     await contextB.close();
@@ -84,12 +90,8 @@ test('two real accounts: CRUD, session persistence, role and owner isolation, lo
   await page.getByRole('button', { name: 'Delete Updated ' + suffix, exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Updated ' + suffix })).toHaveCount(0);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-  ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
   expect((await page.request.get('/api/auth/me')).status()).toBe(401);
   await page.getByRole('button', { name: 'Sign in', exact: true }).first().click();
   await page.getByLabel('Email address').fill(email);
@@ -107,9 +109,7 @@ test('two real accounts: CRUD, session persistence, role and owner isolation, lo
     true
   );
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
 });
 test('explicitly provisioned administrator can inspect the member directory', async ({ page }) => {
   test.skip(
@@ -130,7 +130,5 @@ test('explicitly provisioned administrator can inspect the member directory', as
   expect((await (await page.request.get('/api/auth/me')).json()).data.role).toBe('ADMIN');
   await page.getByRole('combobox', { name: '语言', exact: true }).selectOption('en');
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
 });

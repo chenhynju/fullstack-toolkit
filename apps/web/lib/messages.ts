@@ -24,6 +24,8 @@ export const chinese = {
   WORKSPACE: '工作空间',
   'Main navigation': '主导航',
   Projects: '项目',
+  'No description': '暂无描述',
+  'No projects': '暂无项目',
   Members: '成员',
   'Getting started': '开始使用',
   'BUILT TO BE YOURS': '为你的项目而构建',

@@ -1,0 +1,26 @@
+# Homepage usage guide release — 2026-10-18
+
+Public URL: https://toolkit.purelamp.uk/#guide. Frontend release: r20261018-guide-02, application source commit 94bf4bac6d3915525535609f363c4dd6afa767e6. Review: https://github.com/chenhynju/fullstack-toolkit/pull/3 (stacked on the engineering milestone PR #2).
+
+## User-visible result
+
+The guide is always expanded and appears before the demo workspace. English remains the default and Simplified Chinese follows the existing persistent locale choice. Six linked steps explain real template repository creation, local setup and business-code locations, quality gates, reviewed GitHub commits/PRs, independent Docker/DNS/HTTPS deployment, and versioned recovery. It distinguishes status cards from actual development/deployment, identifies command placeholders, separates local and server commands and explains that the existing release script must be adapted for a different product.
+
+## Executed validation
+
+| Status | Check                                    | Evidence                                                                                                                                                                                                                                                                                                 |
+| ------ | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PASS   | Web lint, strict types, production build | .local/homepage-lint.log, homepage-types.log, homepage-build.log                                                                                                                                                                                                                                         |
+| PASS   | Local browser acceptance                 | Final 6/6 against a new disposable database: guide EN/ZH, anchors/manual/mobile, guest/API/CSRF, real CRUD/owner-role isolation, admin directory, locale/session preservation. .local/homepage-e2e-final.log                                                                                             |
+| PASS   | New PR CI                                | quality-gate, e2e and container all passed in run 39053599009. https://github.com/chenhynju/fullstack-toolkit/actions/runs/39053599009                                                                                                                                                                   |
+| PASS   | Asset budgets                            | Aggregate JS gzip 283.1 KiB within 300 KiB; modern homepage entry 125620 gzip bytes within 160 KiB. These are different metrics and neither is LCP.                                                                                                                                                      |
+| PASS   | Linux candidate                          | Docker standalone build, EN/ZH SSR homepage and manual, all six guide steps present; API/schema/types matched the previous production source. Candidate container removed after checks. .local/homepage-build-progress.log; full log remains protected under the project shared directory on the server. |
+| PASS   | Public HTTPS browser                     | 1/1 real guide journey through the public origin; language choice survives refresh, section anchors and manual link work, 390px layout has no body overflow. .local/homepage-public-guide.log                                                                                                            |
+| PASS   | Visual inspection                        | EN/ZH desktop plus Chinese mobile and deployment-step mobile screenshots captured and inspected. .local/homepage-guide-*.png                                                                                                                                                                             |
+| PASS   | Deployment isolation                     | Only web replaced; existing API image and uptime preserved, no migration or production test users created. Readiness and homepage HTTPS checked. Existing application containers retained their baseline images and uptimes. .local/homepage-publish-status.log, homepage-release-final.log              |
+
+## Corrected attempts
+
+The first complete local suite was 5 PASS / 1 FAIL: an old guest test still searched for the removed collapsed-guide button. The replacement asserts the always-visible guide and six steps; all six final tests passed. Original evidence is retained under .local/homepage-first-run/.
+
+Local-to-server large SFTP/SSH requests repeatedly reset. The server instead retrieved the immutable GitHub source through short SSH commands. A Windows CRLF operator-script issue was corrected before the build ran. These transport/script failures did not switch production. Publication used readiness checks and a compatible prior-web rollback guard; the pointer was finalized only after public browser acceptance. Credentials, private environments, test databases and operator helpers are not published in source.

@@ -10,12 +10,10 @@ test('English is the server default, preference survives refresh and manual navi
     page.setDefaultNavigationTimeout(30000);
     const initial = await page.goto('/');
     expect(await initial!.text()).toContain('lang="en"');
-    await expect(
-      page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
     await page.getByRole('combobox', { name: 'Language', exact: true }).selectOption('zh-CN');
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
-    await expect(page.getByRole('heading', { name: '从稳固起点，构建重要的事。' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '工作空间', exact: true })).toBeVisible();
     const refreshed = await page.reload();
     expect(await refreshed!.text()).toContain('lang="zh-CN"');
     await page.getByRole('link', { name: '用户操作手册', exact: true }).click();
@@ -77,9 +75,7 @@ test('Chinese CRUD, plain user content, localized errors and unchanged session o
   await page.getByRole('button', { name: 'Delete ' + title, exact: true }).click();
   await expect(page.getByRole('heading', { name: title, exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Start strong. Build what matters.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Workspace', exact: true })).toBeVisible();
   await page.getByRole('combobox', { name: 'Language', exact: true }).selectOption('zh-CN');
   await page.getByRole('button', { name: '登录', exact: true }).first().click();
   await page.getByLabel('邮箱地址').fill(email);
