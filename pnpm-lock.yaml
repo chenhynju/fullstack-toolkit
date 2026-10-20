@@ -3,6 +3,7 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 overrides:
   postcss: 8.5.30
@@ -182,7 +183,7 @@ importers:
         version: 1.64.1
       '@repo/config-eslint':
         specifier: workspace:*
-        version: link:../../packages/config-eslint
+        version: file:packages/config-eslint(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3)
       '@repo/config-tailwind':
         specifier: workspace:*
         version: link:../../packages/config-tailwind
@@ -1545,6 +1546,11 @@ packages:
 
   '@prisma/get-platform@6.19.3':
     resolution: {integrity: sha512-xFj1VcJ1N3MKooOQAGO0W5tsd0W2QzIvW7DD7c/8H14Zmp4jseeWAITm+w2LLoLrlhoHdPPh0NMZ8mfL6puoHA==}
+
+  '@repo/config-eslint@file:packages/config-eslint':
+    resolution: {directory: packages/config-eslint, type: directory}
+    peerDependencies:
+      eslint: ^9.0.0
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -5237,6 +5243,17 @@ snapshots:
     dependencies:
       '@prisma/debug': 6.19.3
 
+  '@repo/config-eslint@file:packages/config-eslint(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3)':
+    dependencies:
+      '@eslint/js': 9.39.5
+      eslint: 9.39.5(jiti@1.21.7)
+      eslint-config-prettier: 9.1.2(eslint@9.39.5(jiti@1.21.7))
+      eslint-plugin-react-hooks: 5.1.0(eslint@9.39.5(jiti@1.21.7))
+      typescript-eslint: 8.71.2(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
   '@rollup/rollup-android-arm-eabi@4.64.7':
@@ -6342,6 +6359,10 @@ snapshots:
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - supports-color
+
+  eslint-config-prettier@9.1.2(eslint@9.39.5(jiti@1.21.7)):
+    dependencies:
+      eslint: 9.39.5(jiti@1.21.7)
 
   eslint-config-prettier@9.1.2(eslint@9.39.5(jiti@2.7.0)):
     dependencies:
@@ -8221,6 +8242,17 @@ snapshots:
       is-typed-array: 1.1.15
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
+
+  typescript-eslint@8.71.2(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3):
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 8.71.2(@typescript-eslint/parser@8.71.2(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3))(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3)
+      '@typescript-eslint/parser': 8.71.2(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3)
+      '@typescript-eslint/typescript-estree': 8.71.2(typescript@5.7.3)
+      '@typescript-eslint/utils': 8.71.2(eslint@9.39.5(jiti@1.21.7))(typescript@5.7.3)
+      eslint: 9.39.5(jiti@1.21.7)
+      typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
 
   typescript-eslint@8.71.2(eslint@9.39.5(jiti@2.7.0))(typescript@5.7.3):
     dependencies:
