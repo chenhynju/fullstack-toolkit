@@ -19,10 +19,12 @@ export async function buildApp(
   const config = readConfig(options.env);
   const db = options.db ?? prisma;
   const privilege = await db.$queryRaw<
-    { unsafe: boolean }[]
-  >`SELECT (rolsuper OR rolbypassrls OR EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog') AND c.relowner=r.oid)) AS unsafe FROM pg_roles r WHERE rolname=current_user`;
+    { unsafe: boolean; tables: number; protected: number }[]
+  >`SELECT (rolsuper OR rolbypassrls OR EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog') AND c.relowner=r.oid)) AS unsafe, (SELECT count(*)::integer FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog')) AS tables, (SELECT count(*)::integer FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog') AND c.relrowsecurity AND c.relforcerowsecurity) AS protected FROM pg_roles r WHERE rolname=current_user`;
   if (!privilege[0] || privilege[0].unsafe)
     throw new Error('API database role must not own tenant tables or bypass RLS');
+  if (privilege[0].tables !== 7 || privilege[0].protected !== 7)
+    throw new Error('Tenant schema and forced RLS must be installed before API startup');
   const redis = new Redis(config.REDIS_URL, {
     commandTimeout: 5000,
     connectTimeout: 10000,

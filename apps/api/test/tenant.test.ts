@@ -66,6 +66,14 @@ describe('two real organizations, permissions, RLS and atomic audit', () => {
     await expect(buildApp({ db: ctx.admin, env: ctx.env, logger: false })).rejects.toThrow(
       'must not own tenant tables or bypass RLS'
     );
+    await ctx.admin.$executeRawUnsafe('ALTER TABLE "Project" NO FORCE ROW LEVEL SECURITY');
+    try {
+      await expect(buildApp({ db: ctx.db, env: ctx.env, logger: false })).rejects.toThrow(
+        'forced RLS must be installed'
+      );
+    } finally {
+      await ctx.admin.$executeRawUnsafe('ALTER TABLE "Project" FORCE ROW LEVEL SECURITY');
+    }
   });
   it('creates a project; global ADMIN and forged org header cannot cross tenants', async () => {
     const r = await call(alice, 'POST', base() + '/projects', { title: 'Alpha delivery' });
