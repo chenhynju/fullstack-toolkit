@@ -9,12 +9,31 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 env:
-  DATABASE_URL: file:./ci.db
+  DATABASE_URL: postgresql://toolkit_app:ci-application-only@localhost:5432/toolkit
+  TEST_ADMIN_DATABASE_URL: postgresql://postgres:ci-migration-only@localhost:5432/toolkit
+  TEST_APP_PASSWORD: ci-application-only
+  REDIS_URL: redis://localhost:6379
   APP_ORIGIN: http://localhost:3000
   API_INTERNAL_URL: http://127.0.0.1:3001
   NEXT_TELEMETRY_DISABLED: '1'
 jobs:
   quality-gate:
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci-migration-only
+          POSTGRES_DB: toolkit
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d toolkit"
+          --health-interval 5s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 30
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -33,6 +52,11 @@ jobs:
           restore-keys: |
             turbo-${{ runner.os }}-node22-pnpm11-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm install --frozen-lockfile
+      - run: node scripts/provision-dev-role.mjs
+      - name: Migrate isolated PostgreSQL
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL: ${{ env.TEST_ADMIN_DATABASE_URL }}
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,6 +78,22 @@ jobs:
             packages/ui/coverage
             packages/utils/coverage
   e2e:
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci-migration-only
+          POSTGRES_DB: toolkit
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d toolkit"
+          --health-interval 5s --health-timeout 3s --health-retries 30
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 30
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
@@ -71,7 +111,11 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm db:migrate
+      - run: node scripts/provision-dev-role.mjs
+      - name: Migrate isolated PostgreSQL
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL: ${{ env.TEST_ADMIN_DATABASE_URL }}
       - run: pnpm db:seed
       - uses: actions/cache@v4
         id: browsers

@@ -15,6 +15,7 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
       ...options,
       credentials: 'same-origin',
       cache: 'no-store',
+      signal: options.signal ?? AbortSignal.timeout(30000),
       headers: {
         ...(options.body != null ? { 'Content-Type': 'application/json' } : {}),
         'X-CSRF-Protection': '1',

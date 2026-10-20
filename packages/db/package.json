@@ -16,7 +16,7 @@
     "seed": "tsx prisma/seed.ts",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "node ../../scripts/prepare-sqlite.mjs && prisma migrate deploy"
+    "db:migrate": "prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "6.19.3"

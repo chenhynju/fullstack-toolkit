@@ -16,10 +16,22 @@ describe('fail-closed configuration', () => {
   it('requires database config and valid bounded ports', () => {
     for (const env of [
       {},
-      { DATABASE_URL: 'file:test.db', PORT: '0' },
-      { DATABASE_URL: 'file:test.db', PORT: '70000' },
-      { DATABASE_URL: 'postgres://wrong' },
-      { DATABASE_URL: 'file:test.db', NODE_ENV: 'oops' }
+      {
+        REDIS_URL: 'redis://localhost:6379',
+        DATABASE_URL: 'postgresql://toolkit_app:test@localhost/test',
+        PORT: '0'
+      },
+      {
+        REDIS_URL: 'redis://localhost:6379',
+        DATABASE_URL: 'postgresql://toolkit_app:test@localhost/test',
+        PORT: '70000'
+      },
+      { REDIS_URL: 'redis://localhost:6379', DATABASE_URL: 'postgres://wrong' },
+      {
+        REDIS_URL: 'redis://localhost:6379',
+        DATABASE_URL: 'postgresql://toolkit_app:test@localhost/test',
+        NODE_ENV: 'oops'
+      }
     ])
       expect(() => readConfig(env)).toThrow();
   });
@@ -31,15 +43,26 @@ describe('fail-closed configuration', () => {
       'https://user:secret@example.com'
     ])
       expect(() =>
-        readConfig({ NODE_ENV: 'production', DATABASE_URL: 'file:test.db', APP_ORIGIN })
+        readConfig({
+          REDIS_URL: 'redis://localhost:6379',
+          NODE_ENV: 'production',
+          DATABASE_URL: 'postgresql://toolkit_app:test@localhost/test',
+          APP_ORIGIN
+        })
       ).toThrow();
     expect(
       readConfig({
+        REDIS_URL: 'redis://localhost:6379',
         NODE_ENV: 'production',
-        DATABASE_URL: 'file:test.db',
+        DATABASE_URL: 'postgresql://toolkit_app:test@localhost/test',
         APP_ORIGIN: 'https://example.com'
       }).APP_ORIGIN
     ).toBe('https://example.com');
-    expect(readConfig({ DATABASE_URL: 'file:test.db' }).PORT).toBe(3001);
+    expect(
+      readConfig({
+        REDIS_URL: 'redis://localhost:6379',
+        DATABASE_URL: 'postgresql://toolkit_app:test@localhost/test'
+      }).PORT
+    ).toBe(3001);
   });
 });

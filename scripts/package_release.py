@@ -21,7 +21,7 @@ with tarfile.open(output, 'w:gz') as archive:
             relative = file.relative_to(root)
             if file.is_symlink() or (here == root and name not in root_files):
                 continue
-            if (name.startswith('.env') and name != '.env.example') or name.endswith(('.db', '.db-journal', '.db-shm', '.db-wal', '.zip', '.tgz', '.pem', '.key', '.pfx', '.p12', '.sqlite', '.sqlite3', '.bak', '.tsbuildinfo')):
+            if (name.startswith('.env') and name != '.env.example') or name.endswith(('.db', '.db-journal', '.db-shm', '.db-wal', '.zip', '.tgz', '.pem', '.key', '.pfx', '.p12', '.sqlite', '.sqlite3', '.bak', '.tsbuildinfo', '.dump', '.rdb', '.env')):
                 continue
             archive.add(file, arcname=relative.as_posix(), recursive=False)
             count += 1

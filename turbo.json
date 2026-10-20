@@ -4,9 +4,12 @@
   "globalEnv": [
     "NODE_ENV",
     "DATABASE_URL",
+    "REDIS_URL",
+    "RATE_LIMIT_NAMESPACE",
     "APP_ORIGIN",
     "API_INTERNAL_URL",
     "PORT",
+    "HOST",
     "TRUST_PROXY",
     "BUILD_STANDALONE"
   ],
@@ -21,6 +24,9 @@
     "packages/config-tailwind/**"
   ],
   "globalPassThroughEnv": [
+    "TEST_ADMIN_DATABASE_URL",
+    "TEST_APP_PASSWORD",
+    "MIGRATION_DATABASE_URL",
     "E2E_BASE_URL",
     "E2E_ADMIN_EMAIL",
     "E2E_ADMIN_PASSWORD",

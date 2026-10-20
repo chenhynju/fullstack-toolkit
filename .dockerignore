@@ -18,3 +18,9 @@ packages/db/prisma/dev.db
 
 .vercel
 .husky/_
+**/*.dump
+**/*.rdb
+**/*.env
+/shared/
+/backups/
+/releases/

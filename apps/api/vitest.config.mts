@@ -2,8 +2,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   server: { hmr: false },
   test: {
-    testTimeout: 20000,
-    hookTimeout: 30000,
+    testTimeout: 60000,
+    hookTimeout: 90000,
+    fileParallelism: false,
     coverage: {
       provider: 'v8',
       include: ['src/lib/**', 'src/routes/**', 'src/app.ts'],

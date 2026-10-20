@@ -5,10 +5,15 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   timeout: 120000,
-  expect: { timeout: 15000 },
+  expect: { timeout: 45000 },
   retries: 0,
   reporter: [['list'], ['html', { open: 'never' }]],
-  use: { baseURL: external ?? 'http://localhost:3000', screenshot: 'only-on-failure' },
+  use: {
+    baseURL: external ?? 'http://localhost:3000',
+    screenshot: 'only-on-failure',
+    actionTimeout: 45000,
+    navigationTimeout: 60000
+  },
   webServer: external
     ? undefined
     : [
