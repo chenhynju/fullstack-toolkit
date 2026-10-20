@@ -147,8 +147,10 @@ test('two organizations: invitation, collaboration, scoped roles, removal and au
     await expect(bob.getByRole('button', { name: '项目', exact: true })).toBeVisible();
     await expect(bob.getByRole('button', { name: '创建项目', exact: true })).toBeVisible();
     await bob.getByRole('button', { name: '退出登录', exact: true }).click();
+    await expect(bob.getByRole('button', { name: '退出登录', exact: true })).toHaveCount(0);
     expect((await bob.request.get('/api/auth/me')).status()).toBe(401);
     await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: 'Sign in', exact: true }).first().click();
     await page.getByLabel('Email address').fill(aliceEmail);
     await page.getByLabel('Password', { exact: true }).fill('wrong-password-1234');

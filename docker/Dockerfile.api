@@ -14,7 +14,7 @@ CMD ["pnpm", "--filter", "@repo/db", "db:migrate"]
 
 FROM build AS package
 RUN cp -R node_modules/.pnpm/@prisma+client*/node_modules/.prisma/client /generated-client
-RUN pnpm --filter @repo/api deploy --prod --legacy /out
+RUN NODE_OPTIONS=--max-old-space-size=1024 pnpm --filter @repo/api deploy --prod --legacy /out
 # Replace the deploy-time placeholder at the nearest Node resolution location.
 RUN for target in /out/node_modules/.pnpm/@prisma+client*/node_modules/.prisma/client; do cp -R /generated-client/. "$target/"; done
 RUN cd /out && DATABASE_URL=postgresql://toolkit_app:build-only@localhost/toolkit node --input-type=module -e 'import { prisma } from "@repo/db"; if (!prisma.organization || !prisma.membership) throw new Error("Generated tenant models missing"); await prisma.$disconnect(); console.log("Generated PostgreSQL Prisma runtime verified");'
