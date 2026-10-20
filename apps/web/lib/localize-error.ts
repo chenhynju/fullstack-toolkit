@@ -2,6 +2,8 @@ import { createTranslator, type Locale } from '@toolkit/i18n';
 import { RequestError } from './api';
 import { chinese, english, type MessageKey } from './messages';
 const codes: Record<string, MessageKey> = {
+  INVALID_INVITATION:
+    'Invitation is invalid, expired, already used, or belongs to another account.',
   UNAUTHENTICATED: 'Please sign in to continue.',
   FORBIDDEN: 'You do not have permission for this action.',
   INVALID_CREDENTIALS: 'Email or password is incorrect.',

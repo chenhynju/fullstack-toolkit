@@ -1,0 +1,114 @@
+{
+  "en": {
+    "eyebrow": "HOW TO USE FULLSTACK TOOLKIT",
+    "title": "From a template to your own live product",
+    "intro": "Create an independent codebase, build a business workflow, pass the checks, then publish a version. These are developer actions performed in your terminal and repository.",
+    "boundary": "The board is a working demo. Planned / In progress / Completed only save card status; they do not generate code, run CI or deploy a website.",
+    "mapTitle": "Where your business code belongs",
+    "map": [
+      ["apps/web", "Pages, forms and interactions"],
+      ["apps/api", "Validation, business rules and server-side permissions"],
+      ["packages/db", "Data model and versioned migrations"],
+      ["packages/types", "Shared frontend/backend contracts"],
+      ["apps/web/lib/messages.ts", "English/Chinese interface copy"]
+    ],
+    "steps": [
+      {
+        "title": "Create a real project",
+        "body": "Install Git and GitHub CLI, sign in, then use the template to create an independent repository and clone it. Replace YOUR_ACCOUNT and my-product with your own names. The board below creates records, not repositories.",
+        "code": "gh auth login\ngh repo create YOUR_ACCOUNT/my-product --template chenhynju/fullstack-toolkit --private --clone\ncd my-product\nnode scripts/init-project.mjs my-product",
+        "note": "The initializer changes the root package name and README titles and creates .env if absent. Update the visible branding separately. Keep @repo/* names unless updating all workspace references."
+      },
+      {
+        "title": "Run locally and develop one complete workflow",
+        "body": "Install Node 22.14+ and the pinned pnpm 11.7.0. Use a new branch and a private development environment. For a booking app, first finish selecting a slot → booking → viewing/cancelling it, including failure paths.",
+        "code": "corepack enable\ngit switch -c feat/first-business-flow\npnpm install --frozen-lockfile\npnpm db:migrate\npnpm dev",
+        "note": "Open http://localhost:3000; the API uses 3001. Check that ports are free. Reuse authentication, error handling and i18n, then add your own domain rules. Every product needs its own database and environment."
+      },
+      {
+        "title": "Make quality a release gate",
+        "body": "Run these from the project root. Fix every failure before merging. Add tests for real business behavior: invalid input, permissions, isolation and a browser journey, beyond a successful build or HTTP 200.",
+        "code": "pnpm format:check\npnpm lint\npnpm typecheck\npnpm test\npnpm build\npnpm size-check\npnpm e2e",
+        "note": "Use a disposable database for browser tests: they create accounts and data. An administrator journey needs explicitly configured test credentials. A skipped test is not a pass. GitHub required checks must be enabled separately."
+      },
+      {
+        "title": "Push to GitHub and review a pull request",
+        "body": "Review your diff, commit a focused change and open a PR. Check Actions logs and test reports; require the quality-gate and e2e checks before merging into main.",
+        "code": "git diff\ngit status\ngit add apps/web apps/api packages/db packages/types\ngit commit -m \"feat(booking): add first booking workflow\"\ngit push --set-upstream origin feat/first-business-flow\ngh pr create --base main --fill",
+        "note": "Stage only reviewed paths; add reviewed configuration/docs changes when needed. Never commit .env, credentials, databases or uploads. Configure branch protection, GitHub Environments and deployment secrets for each new repository; template files do not configure those settings."
+      },
+      {
+        "title": "Deploy an independent product",
+        "body": "After tests pass, package the source and upload it to the new product’s own server directory. Configure an unused domain, ports and a private runtime.env. The example below is a Linux server command run from that uploaded project root.",
+        "code": "python scripts/package_release.py .local/my-product-v1.tgz\n\n# On the server, from the uploaded project root:\ndocker compose --project-name my-product --env-file /opt/my-product/shared/runtime.env -f docker/docker-compose.yml up -d --build",
+        "note": "Set APP_ORIGIN=https://my-product.example.com, unused WEB_PORT/API_PORT and a unique RELEASE_TAG=my-product-v1 in the private server file. Compose creates a separate project volume. Point DNS to the host, configure a dedicated Caddy HTTPS site and verify /api/health, /api/ready and the actual business flow. Replace example.com with your own domain. Protect runtime.env with chmod 600 and keep it out of Git."
+      },
+      {
+        "title": "Release updates and recover safely",
+        "body": "Release with a new immutable version tag. Before database migrations, create and verify a consistent backup. Keep the previous images and source, run public HTTPS acceptance and check other services after switching.",
+        "code": null,
+        "note": "Use the previous images only with a compatible schema; otherwise restore the matching backup. Never run docker compose down -v on a live product. scripts/release.sh and the existing Deploy workflow target this toolkit installation: adapt host paths, ports, image names and secrets before using them for another product. Vercel/GHCR flows remain separate work, not actions triggered by a board status."
+      }
+    ],
+    "repo": "Open the GitHub template",
+    "manual": "Full operation manual",
+    "runbook": "Deployment and recovery runbook",
+    "demo": "The demo workspace follows below. Use the steps above to build an actual new product."
+  },
+  "zh-CN": {
+    "eyebrow": "FULLSTACK TOOLKIT 使用指南",
+    "title": "从工程模板，到你自己的线上项目",
+    "intro": "创建独立源码工程，开发业务流程，通过质量检查，再发布一个版本。这些操作在你的终端、代码仓库与服务器中完成。",
+    "boundary": "看板是功能示例。“计划中／进行中／已完成”只保存卡片状态，不会生成源码、运行 CI 或部署网站。",
+    "mapTitle": "业务代码写在哪里",
+    "map": [
+      ["apps/web", "页面、表单与交互"],
+      ["apps/api", "输入校验、业务规则与服务端权限"],
+      ["packages/db", "数据模型与版本化迁移"],
+      ["packages/types", "前后端共享接口契约"],
+      ["apps/web/lib/messages.ts", "英文、中文界面文案"]
+    ],
+    "steps": [
+      {
+        "title": "真正创建一个新项目",
+        "body": "安装 Git 与 GitHub CLI 并登录，再从模板创建独立仓库并下载到本机。将 YOUR_ACCOUNT 和 my-product 换成你的账号和项目名；下方看板创建的是记录，不是代码仓库。",
+        "code": "gh auth login\ngh repo create YOUR_ACCOUNT/my-product --template chenhynju/fullstack-toolkit --private --clone\ncd my-product\nnode scripts/init-project.mjs my-product",
+        "note": "初始化会修改根包名、README 标题，并在缺失时创建 .env。界面品牌需另外修改；保留 @repo/* 包名，除非同步更新所有工作区引用。"
+      },
+      {
+        "title": "本机启动，先开发一条完整业务流程",
+        "body": "准备 Node 22.14+ 与项目固定的 pnpm 11.7.0。在新分支和独立开发环境中工作。以预约系统为例，先打通“选时段 → 预约 → 查看与取消”，并处理失败情况。",
+        "code": "corepack enable\ngit switch -c feat/first-business-flow\npnpm install --frozen-lockfile\npnpm db:migrate\npnpm dev",
+        "note": "打开 http://localhost:3000，API 使用 3001。先确认端口未占用。复用认证、错误处理和 i18n，再实现自己的业务规则；每个产品使用独立数据库和环境配置。"
+      },
+      {
+        "title": "用质量门禁控制交付",
+        "body": "在项目根目录执行以下命令，修复失败后再合并。新业务需覆盖非法输入、权限、数据隔离及真实浏览器流程，不能只证明构建成功或 HTTP 200。",
+        "code": "pnpm format:check\npnpm lint\npnpm typecheck\npnpm test\npnpm build\npnpm size-check\npnpm e2e",
+        "note": "浏览器测试会创建账号和数据，必须使用一次性测试库。管理员流程需显式配置测试凭据；跳过不算通过。还需在 GitHub 单独开启必需状态检查。"
+      },
+      {
+        "title": "推送 GitHub，通过 PR 审查",
+        "body": "检查差异，按小步提交并创建 PR。查看 Actions 日志与测试报告，在合并 main 前要求 quality-gate、e2e 检查通过。",
+        "code": "git diff\ngit status\ngit add apps/web apps/api packages/db packages/types\ngit commit -m \"feat(booking): add first booking workflow\"\ngit push --set-upstream origin feat/first-business-flow\ngh pr create --base main --fill",
+        "note": "仅暂存已审查路径；有配置或文档修改时再添加对应文件。禁止提交 .env、凭据、数据库或上传文件。每个新仓库都要配置分支保护、GitHub Environments 与部署密钥；复制模板不会自动开启这些设置。"
+      },
+      {
+        "title": "部署成一个独立的网站",
+        "body": "测试通过后打包源码，上传到新产品专属服务器目录。配置未占用的域名、端口和私有 runtime.env。下面的 Docker 命令在 Linux 服务器上、已上传项目的根目录执行。",
+        "code": "python scripts/package_release.py .local/my-product-v1.tgz\n\n# On the server, from the uploaded project root:\ndocker compose --project-name my-product --env-file /opt/my-product/shared/runtime.env -f docker/docker-compose.yml up -d --build",
+        "note": "在私有服务器配置中设置 APP_ORIGIN=https://my-product.example.com、未占用的 WEB_PORT/API_PORT，以及唯一的 RELEASE_TAG=my-product-v1。Compose 会创建独立项目数据卷。再配置指向主机的 DNS、独立 Caddy HTTPS 站点，验收 /api/health、/api/ready 与真实业务。example.com 需换成你的域名。 用 chmod 600 保护 runtime.env，且不要提交到 Git。"
+      },
+      {
+        "title": "发布更新，并保留恢复能力",
+        "body": "每次更新使用新的不可变版本标签。数据库迁移前制作并核验一致性备份，保留旧镜像与源码；切换后执行公网 HTTPS 业务验收，并检查其他服务。",
+        "code": null,
+        "note": "仅在数据库结构兼容时回退旧镜像，否则恢复配套备份。禁止在生产项目执行 docker compose down -v。现有 scripts/release.sh 和 Deploy 工作流针对 toolkit 站点；用于新产品前必须适配路径、端口、镜像名与密钥。Vercel/GHCR 流程仍属独立工作，看板状态不会触发它们。"
+      }
+    ],
+    "repo": "打开 GitHub 模板",
+    "manual": "完整操作手册",
+    "runbook": "部署与恢复说明",
+    "demo": "下方是演示工作空间。要开发真正的新产品，请按上方步骤创建独立工程。"
+  }
+}

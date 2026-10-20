@@ -3,6 +3,8 @@ import cookie from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import { randomUUID } from 'node:crypto';
+import Redis from 'ioredis';
+import { ZodError } from 'zod';
 import { prisma, type PrismaClient } from '@repo/db';
 import { readConfig } from './lib/config';
 import { AppError } from './lib/errors';
@@ -10,11 +12,33 @@ import { SESSION_COOKIE, tokenHash } from './lib/auth';
 import { authRoutes } from './routes/auth';
 import { userRoutes } from './routes/users';
 import { projectRoutes } from './routes/projects';
+import { organizationRoutes } from './routes/organizations';
 export async function buildApp(
   options: { db?: PrismaClient; env?: NodeJS.ProcessEnv; logger?: boolean } = {}
 ) {
   const config = readConfig(options.env);
   const db = options.db ?? prisma;
+  const privilege = await db.$queryRaw<
+    { unsafe: boolean; tables: number; protected: number }[]
+  >`SELECT (rolsuper OR rolbypassrls OR EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog') AND c.relowner=r.oid)) AS unsafe, (SELECT count(*)::integer FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog')) AS tables, (SELECT count(*)::integer FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('Organization','Membership','Project','Task','Comment','Invitation','AuditLog') AND c.relrowsecurity AND c.relforcerowsecurity) AS protected FROM pg_roles r WHERE rolname=current_user`;
+  if (!privilege[0] || privilege[0].unsafe)
+    throw new Error('API database role must not own tenant tables or bypass RLS');
+  if (privilege[0].tables !== 7 || privilege[0].protected !== 7)
+    throw new Error('Tenant schema and forced RLS must be installed before API startup');
+  const redis = new Redis(config.REDIS_URL, {
+    commandTimeout: 5000,
+    connectTimeout: 10000,
+    lazyConnect: true,
+    enableOfflineQueue: false,
+    maxRetriesPerRequest: 1
+  });
+  redis.on('error', () => {});
+  try {
+    await redis.connect();
+  } catch {
+    redis.disconnect();
+    throw new Error('Redis unavailable at startup');
+  }
   const app = Fastify({
     logger:
       options.logger === false
@@ -36,7 +60,15 @@ export async function buildApp(
   });
   await app.register(cookie);
   await app.register(helmet);
-  await app.register(rateLimit, { max: 300, timeWindow: '1 minute' });
+  app.addHook('onClose', async () => {
+    await redis.quit().catch(() => redis.disconnect());
+  });
+  await app.register(rateLimit, {
+    max: 300,
+    timeWindow: '1 minute',
+    redis,
+    nameSpace: config.RATE_LIMIT_NAMESPACE + ':rate:'
+  });
   app.decorateRequest('currentUser', null);
   app.addHook('onRequest', async (req, reply) => {
     reply.header('X-Request-Id', req.id).header('Cache-Control', 'no-store');
@@ -67,10 +99,14 @@ export async function buildApp(
       status = error.statusCode;
       code = error.code;
       message = error.message;
+    } else if (error instanceof ZodError) {
+      status = 400;
+      code = 'INVALID_INPUT';
+      message = 'Provide valid input for this action.';
     } else if (candidate?.code === 'P2002') {
       status = 409;
       code = 'CONFLICT';
-      message = 'An account with this email already exists.';
+      message = 'This record already exists.';
     } else if (
       candidate?.statusCode &&
       candidate?.statusCode >= 400 &&
@@ -102,10 +138,12 @@ export async function buildApp(
   }));
   app.get('/api/ready', async () => {
     await db.$queryRaw`SELECT 1`;
-    return { status: 'ok', database: 'connected' };
+    await redis.ping();
+    return { status: 'ok', database: 'connected', redis: 'connected' };
   });
   authRoutes(app, db, config);
   userRoutes(app, db);
   projectRoutes(app, db);
+  organizationRoutes(app, db, config);
   return app;
 }

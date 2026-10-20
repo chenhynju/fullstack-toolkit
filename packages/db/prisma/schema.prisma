@@ -1,9 +1,8 @@
-// Single-instance SQLite baseline; see ADR 0004.
 generator client {
   provider = "prisma-client-js"
 }
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url = env("DATABASE_URL")
 }
 model User {
@@ -14,7 +13,9 @@ model User {
   passwordHash String?
   role String @default("USER")
   sessions Session[]
+  memberships Membership[]
   projects Project[]
+  comments Comment[]
 }
 model Session {
   id String @id @default(cuid())
@@ -25,14 +26,90 @@ model Session {
   @@index([userId])
   @@index([expiresAt])
 }
+model Organization {
+  id String @id @default(cuid())
+  name String
+  createdAt DateTime @default(now())
+  memberships Membership[]
+  projects Project[]
+  invitations Invitation[]
+  audits AuditLog[]
+}
+model Membership {
+  organizationId String
+  userId Int
+  role String @default("MEMBER")
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignedTasks Task[]
+  @@id([organizationId, userId])
+  @@index([userId])
+}
 model Project {
   id String @id @default(cuid())
+  organizationId String
   title String
   description String @default("")
   status String @default("PLANNED")
   ownerId Int
-  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  @@index([ownerId, createdAt])
+  tasks Task[]
+  @@unique([organizationId, id])
+  @@index([organizationId, createdAt])
+}
+model Task {
+  id String @id @default(cuid())
+  organizationId String
+  projectId String
+  title String
+  status String @default("TODO")
+  assigneeId Int?
+  dueAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project Project @relation(fields: [organizationId, projectId], references: [organizationId, id], onDelete: Cascade)
+  assignee Membership? @relation(fields: [organizationId, assigneeId], references: [organizationId, userId], onDelete: NoAction)
+  comments Comment[]
+  @@unique([organizationId, id])
+  @@index([organizationId, projectId])
+}
+model Comment {
+  id String @id @default(cuid())
+  organizationId String
+  taskId String
+  authorId Int
+  body String
+  createdAt DateTime @default(now())
+  task Task @relation(fields: [organizationId, taskId], references: [organizationId, id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  @@index([organizationId, taskId])
+}
+model Invitation {
+  id String @id @default(cuid())
+  organizationId String
+  email String
+  role String
+  tokenHash String @unique
+  expiresAt DateTime
+  acceptedAt DateTime?
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@index([organizationId, email])
+}
+model AuditLog {
+  id String @id @default(cuid())
+  organizationId String
+  actorId Int
+  action String
+  objectId String
+  requestId String
+  details Json @default("{}")
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@index([organizationId, createdAt])
 }

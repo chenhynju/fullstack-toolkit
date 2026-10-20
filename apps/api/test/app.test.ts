@@ -4,6 +4,8 @@ import { tokenHash } from '../src/lib/auth';
 describe('real database authentication and authorization', () => {
   let ctx: Awaited<ReturnType<typeof fixture>>;
   let alice: string, bob: string, projectId: string;
+  let organizationId: string;
+  const projectPath = () => `/api/organizations/${organizationId}/projects`;
   const password = 'integration-password-1749';
   beforeAll(async () => {
     ctx = await fixture();
@@ -24,11 +26,12 @@ describe('real database authentication and authorization', () => {
     expect((await ctx.app.inject('/api/health')).json().status).toBe('ok');
     expect((await ctx.app.inject('/api/ready')).json()).toEqual({
       status: 'ok',
-      database: 'connected'
+      database: 'connected',
+      redis: 'connected'
     });
   });
   it('rejects anonymous requests with stable errors and request IDs', async () => {
-    for (const url of ['/api/projects', '/api/users', '/api/auth/me']) {
+    for (const url of ['/api/organizations', '/api/users', '/api/auth/me']) {
       const res = await ctx.app.inject(url);
       expect(res.statusCode).toBe(401);
       expect(res.json().error.code).toBe('UNAUTHENTICATED');
@@ -104,48 +107,56 @@ describe('real database authentication and authorization', () => {
     }
   });
   it('creates and reads owner-scoped projects; validates mutations', async () => {
+    const org = await ctx.app.inject({
+      method: 'POST',
+      url: '/api/organizations',
+      headers: { ...mutationHeaders, cookie: alice },
+      payload: { name: 'Alice organization' }
+    });
+    expect(org.statusCode).toBe(201);
+    organizationId = org.json().data.id;
     const denied = await ctx.app.inject({
       method: 'POST',
-      url: '/api/projects',
+      url: projectPath(),
       headers: { ...mutationHeaders, cookie: alice },
       payload: { title: 'No injection', ownerId: 2 }
     });
     expect(denied.statusCode).toBe(400);
     const created = await ctx.app.inject({
       method: 'POST',
-      url: '/api/projects',
+      url: projectPath(),
       headers: { ...mutationHeaders, cookie: alice },
       payload: { title: 'Ship a template', description: 'Real persistence' }
     });
     expect(created.statusCode).toBe(201);
     projectId = created.json().data.id;
-    expect(created.json().data).not.toHaveProperty('ownerId');
+    expect(created.json().data.organizationId).toBe(organizationId);
     expect(
       (
-        await ctx.app.inject({ url: '/api/projects/' + projectId, headers: { cookie: alice } })
+        await ctx.app.inject({ url: projectPath() + '/' + projectId, headers: { cookie: alice } })
       ).json().data.title
     ).toBe('Ship a template');
-    const list = await ctx.app.inject({ url: '/api/projects', headers: { cookie: bob } });
-    expect(list.json().data).toEqual([]);
+    const list = await ctx.app.inject({ url: projectPath(), headers: { cookie: bob } });
+    expect(list.statusCode).toBe(404);
   });
   it('blocks another account reading/updating/deleting a known project ID', async () => {
     for (const method of ['GET', 'PATCH', 'DELETE'] as const) {
       const res = await ctx.app.inject({
         method,
-        url: '/api/projects/' + projectId,
+        url: projectPath() + '/' + projectId,
         headers: { ...mutationHeaders, cookie: bob },
         ...(method === 'PATCH' ? { payload: { title: 'Stolen' } } : {})
       });
       expect(res.statusCode).toBe(404);
     }
-    expect((await ctx.db.project.findUniqueOrThrow({ where: { id: projectId } })).title).toBe(
+    expect((await ctx.admin.project.findUniqueOrThrow({ where: { id: projectId } })).title).toBe(
       'Ship a template'
     );
   });
   it('updates owner data and persists it across app restart', async () => {
     const changed = await ctx.app.inject({
       method: 'PATCH',
-      url: '/api/projects/' + projectId,
+      url: projectPath() + '/' + projectId,
       headers: { ...mutationHeaders, cookie: alice },
       payload: { status: 'DONE', title: 'Template shipped' }
     });
@@ -156,9 +167,9 @@ describe('real database authentication and authorization', () => {
     ctx.app = await buildApp({
       db: ctx.db,
       logger: false,
-      env: { NODE_ENV: 'test', DATABASE_URL: 'file:test.db', APP_ORIGIN: 'http://localhost:3000' }
+      env: ctx.env
     });
-    const res = await ctx.app.inject({ url: '/api/projects', headers: { cookie: alice } });
+    const res = await ctx.app.inject({ url: projectPath(), headers: { cookie: alice } });
     expect(res.json().data[0]).toMatchObject({ title: 'Template shipped', status: 'DONE' });
   });
   it('enforces admin directory permissions and hides hashes', async () => {
@@ -166,14 +177,13 @@ describe('real database authentication and authorization', () => {
     expect(forbidden.statusCode).toBe(403);
     await ctx.db.user.update({ where: { email: 'alice@example.com' }, data: { role: 'ADMIN' } });
     const allowed = await ctx.app.inject({ url: '/api/users', headers: { cookie: alice } });
-    expect(allowed.statusCode).toBe(200);
-    expect(allowed.json().data.length).toBe(2);
+    expect(allowed.statusCode).toBe(403);
     expect(allowed.body).not.toContain('passwordHash');
   });
   it('rejects empty patches and deletes owned data', async () => {
     const invalid = await ctx.app.inject({
       method: 'PATCH',
-      url: '/api/projects/' + projectId,
+      url: projectPath() + '/' + projectId,
       headers: { ...mutationHeaders, cookie: alice },
       payload: {}
     });
@@ -182,12 +192,12 @@ describe('real database authentication and authorization', () => {
       (
         await ctx.app.inject({
           method: 'DELETE',
-          url: '/api/projects/' + projectId,
+          url: projectPath() + '/' + projectId,
           headers: { ...mutationHeaders, cookie: alice }
         })
       ).statusCode
     ).toBe(204);
-    expect((await ctx.db.project.count()).toString()).toBe('0');
+    expect((await ctx.admin.project.count()).toString()).toBe('0');
   });
   it('revokes logout sessions and rejects expired or tampered sessions', async () => {
     const logout = await ctx.app.inject({
@@ -233,7 +243,7 @@ describe('real database authentication and authorization', () => {
     for (const payload of ['{', JSON.stringify({ body: 'x'.repeat(17000) })]) {
       const res = await ctx.app.inject({
         method: 'POST',
-        url: '/api/projects',
+        url: projectPath(),
         headers: { ...mutationHeaders, 'content-type': 'application/json' },
         payload
       });

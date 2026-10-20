@@ -8,12 +8,19 @@
     "./react.mjs": "./react.mjs"
   },
   "dependencies": {
-    "@eslint/js": "^9.17.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "typescript-eslint": "^8.18.2"
+    "@eslint/js": "9.39.5",
+    "eslint-config-prettier": "9.1.2",
+    "eslint-plugin-react-hooks": "5.1.0",
+    "typescript-eslint": "8.71.2"
   },
   "peerDependencies": {
     "eslint": "^9.0.0"
+  },
+  "scripts": {
+    "test": "node --test --experimental-test-coverage --test-coverage-lines=70 --test-coverage-include=rules/*.mjs test/*.test.mjs",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "devDependencies": {
+    "eslint": "9.39.5"
   }
 }

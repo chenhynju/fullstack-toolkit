@@ -12,6 +12,12 @@ export default function ManualPage() {
         <LanguageSwitcher />
       </nav>
       <h1>{content.title}</h1>
+      <p className="manual-intro">
+        {locale === 'zh-CN'
+          ? '此页保留旧版工程模板资料。当前企业工作空间的操作说明请查看'
+          : 'This page preserves the earlier engineering template reference. For the current team workspace, read '}{' '}
+        <Link href="/help">{locale === 'zh-CN' ? '团队操作手册' : 'the team manual'}</Link>。
+      </p>
       <p className="manual-intro">{content.intro}</p>
       <nav className="manual-toc" aria-label={t('User manual')}>
         {content.sections.map((section) => (

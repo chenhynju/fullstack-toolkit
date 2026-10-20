@@ -3,7 +3,7 @@ FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18
 RUN apk add --no-cache openssl libc6-compat && corepack enable
 WORKDIR /app
 ENV PNPM_HOME=/pnpm
-ENV PATH=$PNPM_HOME:$PATH
+ENV PATH=$PNPM_HOME:$PATH NODE_OPTIONS=--max-old-space-size=512
 COPY . .
 RUN --mount=type=cache,id=toolkit-pnpm,target=/pnpm/store pnpm install --frozen-lockfile --store-dir=/pnpm/store
 RUN pnpm --filter @repo/api build
@@ -14,10 +14,10 @@ CMD ["pnpm", "--filter", "@repo/db", "db:migrate"]
 
 FROM build AS package
 RUN cp -R node_modules/.pnpm/@prisma+client*/node_modules/.prisma/client /generated-client
-RUN pnpm --filter @repo/api deploy --prod --legacy /out
+RUN pnpm --filter @repo/api --prod deploy --ignore-scripts /out
 # Replace the deploy-time placeholder at the nearest Node resolution location.
-RUN for target in /out/node_modules/.pnpm/@prisma+client*/node_modules/.prisma/client; do cp -R /generated-client/. "$target/"; done
-RUN cd /out && DATABASE_URL=file:/tmp/image-smoke.db node --input-type=module -e 'import { prisma } from "@repo/db"; await prisma.$queryRawUnsafe("SELECT 1"); await prisma.$disconnect(); console.log("Generated Prisma runtime verified");'
+RUN for target in /out/node_modules/.pnpm/@prisma+client*; do mkdir -p "$target/node_modules/.prisma/client" && cp -R /generated-client/. "$target/node_modules/.prisma/client/"; done
+RUN cd /out && DATABASE_URL=postgresql://toolkit_app:build-only@localhost/toolkit node --input-type=module -e 'import { prisma } from "@repo/db"; if (!prisma.organization || !prisma.membership) throw new Error("Generated tenant models missing"); await prisma.$disconnect(); console.log("Generated PostgreSQL Prisma runtime verified");'
 
 FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS runtime
 RUN apk add --no-cache openssl libc6-compat && mkdir /data && chown node:node /data

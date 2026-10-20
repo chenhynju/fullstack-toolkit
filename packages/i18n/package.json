@@ -17,13 +17,13 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint .",
-    "test": "tsc -p tsconfig.json && node --test test/*.test.mjs"
+    "lint": "eslint . --max-warnings 0",
+    "test": "tsc -p tsconfig.json && node --test --experimental-test-coverage --test-coverage-lines=70 --test-coverage-include=dist/*.js test/*.test.mjs"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "eslint": "^9.17.0",
-    "typescript": "^5.7.3"
+    "eslint": "9.39.5",
+    "typescript": "5.7.3"
   }
 }

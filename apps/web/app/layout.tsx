@@ -6,9 +6,8 @@ import { LocaleProvider } from '@/components/locale-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'fullstack-toolkit',
-  description:
-    'A reusable full-stack foundation with authentication, private projects and deployment tooling.'
+  title: 'Workspace · Team projects',
+  description: 'Organization workspaces with shared projects, tasks, scoped roles and audit trails.'
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

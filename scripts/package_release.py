@@ -9,19 +9,19 @@ root = pathlib.Path(__file__).resolve().parent.parent
 output = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.local/release.tgz').resolve()
 output.parent.mkdir(parents=True, exist_ok=True)
 excluded = {'node_modules', '.git', '.local', '.next', '.turbo', 'dist', 'coverage', 'playwright-report', 'playwright-pilot-report', 'test-results', '__pycache__'}
-allowed = {'apps', 'packages', 'scripts', 'docs', 'docker', '.github', 'examples'}
-root_files = {'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'turbo.json', '.env.example', '.gitignore', '.dockerignore', '.npmrc', '.prettierrc', '.prettierignore', 'README.md', 'README.zh-CN.md', 'LICENSE', 'NOTICE'}
+allowed = {'apps', 'packages', 'scripts', 'docs', 'docker', '.github', 'examples', '.husky'}
+root_files = {'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'turbo.json', '.env.example', '.gitignore', '.dockerignore', '.npmrc', '.prettierrc', '.prettierignore', 'README.md', 'README.zh-CN.md', 'LICENSE', 'NOTICE', 'commitlint.config.mjs', 'lint-staged.config.mjs'}
 count = 0
 with tarfile.open(output, 'w:gz') as archive:
     for directory, folders, filenames in os.walk(root):
         here = pathlib.Path(directory)
-        folders[:] = [name for name in folders if name not in excluded and not (here / name).is_symlink() and (here != root or name in allowed)]
+        folders[:] = [name for name in folders if name not in excluded and not (here.name == '.husky' and name == '_') and not (here / name).is_symlink() and (here != root or name in allowed)]
         for name in sorted(filenames):
             file = here / name
             relative = file.relative_to(root)
             if file.is_symlink() or (here == root and name not in root_files):
                 continue
-            if (name.startswith('.env') and name != '.env.example') or name.endswith(('.db', '.db-journal', '.db-shm', '.db-wal', '.zip', '.tgz', '.pem', '.key', '.pfx', '.p12', '.sqlite', '.sqlite3', '.bak', '.tsbuildinfo')):
+            if (name.startswith('.env') and name != '.env.example') or name.endswith(('.db', '.db-journal', '.db-shm', '.db-wal', '.zip', '.tgz', '.pem', '.key', '.pfx', '.p12', '.sqlite', '.sqlite3', '.bak', '.tsbuildinfo', '.dump', '.rdb', '.env')):
                 continue
             archive.add(file, arcname=relative.as_posix(), recursive=False)
             count += 1
