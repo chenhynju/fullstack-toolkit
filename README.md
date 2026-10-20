@@ -2,6 +2,8 @@
 
 A multi-tenant team project workspace built from the existing fullstack-toolkit foundation: Next.js, TypeScript, Fastify, PostgreSQL/Prisma and Redis in a pnpm/Turborepo monorepo.
 
+Live workspace: https://toolkit.purelamp.uk · [Operating help](https://toolkit.purelamp.uk/help). The 2026-10-21 release retained existing accounts/projects and passed public two-organization collaboration and restart acceptance; see the verification ledger for exact scope.
+
 Organizations contain their own memberships, invitations, projects, tasks, comments and append-only audit events. One identity can hold different roles in different organizations. Legacy global ADMIN is not an organization permission. The API checks live membership and role; forced PostgreSQL RLS and composite foreign keys provide database isolation. The application rejects database roles that own tenant tables or bypass RLS.
 
 ## Develop

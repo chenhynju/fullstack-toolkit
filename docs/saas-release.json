@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "deployedSource": "28a4b31d1092a121b2e269ad7af59aac1fb23c99",
+  "release": "r20261021-saas-02",
+  "url": "https://toolkit.purelamp.uk",
+  "ci": "https://github.com/chenhynju/fullstack-toolkit/actions/runs/39498567334",
+  "tests": {
+    "api": {
+      "passed": 36,
+      "files": 6,
+      "statementCoverage": 98.08,
+      "branchCoverage": 94.39,
+      "functionCoverage": 95.65
+    },
+    "publicBrowser": {
+      "passed": 4,
+      "seconds": 58.4
+    },
+    "localLintTypecheckTasks": 19,
+    "forcedRLSTables": 7,
+    "runtimeRestart": true,
+    "existingBrowserSessionAfterRestart": true,
+    "postgresBackupRestoreDigestsMatch": true,
+    "redisPersistence": true
+  },
+  "legacyReconciled": {
+    "users": 11,
+    "sessions": 3,
+    "projects": 2,
+    "organizations": 11,
+    "memberships": 11
+  },
+  "temporaryAccountsRemoved": 2,
+  "isolatedTestServicesRemoved": true,
+  "unchangedOtherServiceCount": 29,
+  "services": {
+    "api": {
+      "image": "fullstack-toolkit-api:r20261021-saas-02",
+      "imageID": "sha256:45220240715fe63c55244d0e992bbce6233fc2944cc329c22e67ac74be3c10e1",
+      "runtimeUser": "node",
+      "healthy": true,
+      "portBindings": {
+        "3001/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "3181"
+          }
+        ]
+      },
+      "memoryLimitBytes": 268435456
+    },
+    "web": {
+      "image": "fullstack-toolkit-web:r20261021-saas-02",
+      "imageID": "sha256:92dd0f0d48c07d993bb4d140063cf2b9d12529912298c8e48e1b8e6da77002c1",
+      "runtimeUser": "node",
+      "healthy": true,
+      "portBindings": {
+        "3000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "3180"
+          }
+        ]
+      },
+      "memoryLimitBytes": 268435456
+    },
+    "postgres": {
+      "image": "postgres:16-alpine",
+      "imageID": "sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea",
+      "runtimeUser": "",
+      "healthy": true,
+      "portBindings": {},
+      "memoryLimitBytes": 335544320
+    },
+    "redis": {
+      "image": "redis:7-alpine",
+      "imageID": "sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499",
+      "runtimeUser": "",
+      "healthy": true,
+      "portBindings": {},
+      "memoryLimitBytes": 100663296
+    }
+  },
+  "productionBackupSHA256": "f5a1953cd864d879a879ace34932a51c54b1b473fe91ed7a9f1ecf74ded69501"
+}

@@ -23,3 +23,5 @@
 8. 顶部切换中英文，偏好在刷新和导航后保留。刷新获取最新数据与成员权限；帮助页提供相同操作指引。
 
 This release does not send invitation emails, collect payments or provide SSO/MFA. See the verification ledger for actual deployment/test status. 本版本不自动投递邀请邮件、不收款、不提供 SSO/MFA；实际部署与测试状态以验证记录为准。
+
+Account email ownership is not externally verified in this release. Share invitation links privately and confirm the intended colleague through your existing trusted channel. Matching a local account email is not corporate identity verification. 本版本未验证邮箱归属；请私下分享邀请并通过已有可信渠道确认同事身份，账号邮箱匹配不能替代企业身份核验。

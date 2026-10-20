@@ -33,3 +33,13 @@ Before any release, build all images while the current application remains runni
 Rollback must use the exact previously running API and web tags; these may differ because the old homepage was deployed independently. Recreate only toolkit API/web against the retained old SQLite volume for a first-cutover rollback. Preserve all new PostgreSQL writes for reconciliation; a code rollback does not magically reverse schema/data changes or preserve newly created records in SQLite. Do not delete volumes, use down -v or restore over a live database.
 
 See `saas-verification.md` for actual results and limitations; documentation and container health do not substitute for public business acceptance.
+
+## Accepted first cutover
+
+Release `r20261021-saas-02` runs application source `28a4b31d1092a121b2e269ad7af59aac1fb23c99`. `/opt/fullstack-toolkit/current` now points to that release. Private `shared/saas.env` separates the owner and application URLs; `shared/saas-migration-verified.json` records reconciled migration and public acceptance. No DNS or Caddy change was needed.
+
+The migration image normally receives DATABASE_URL for Prisma migrations. The importer additionally requires MIGRATION_DATABASE_URL. For an explicitly owner-connected one-off importer, invoke `sh -c 'MIGRATION_DATABASE_URL="$DATABASE_URL" node scripts/import-sqlite.mjs /private-packet.json'` inside the migration container. Never pass this owner URL to the API. The first missing-variable attempt rolled back successfully; do not reuse or overwrite its snapshot when retrying.
+
+Final migration retained 11 users, 3 sessions and 2 projects and created 11 personal organizations. Controlled public browser fixtures were removed after acceptance. The private `shared/saas-20261021` directory holds final-import, restart-acceptance, fixture-cleanup, production-accepted and final-runtime JSON records, plus private backup/restore material. The accepted backup is a local-host recovery copy; off-host disaster recovery is not proven.
+
+Future releases use `scripts/release.sh` / `scripts/release-saas.sh` and `docker/compose.saas.yml`. They require the completed first-migration marker, build immutable images before replacement, back up PostgreSQL, run migrations and replace only API/web. Code rollback is automatic only when migration contents are identical; otherwise the API is stopped for reviewed database recovery rather than claiming an incompatible rollback succeeded. Public browser business acceptance remains a separate required operational step after health checks.
